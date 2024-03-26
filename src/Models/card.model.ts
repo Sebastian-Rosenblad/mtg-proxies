@@ -1,10 +1,9 @@
 export interface CardM {
   id: string;
-  published: boolean;
   name: string;
   manaCost?: string;
-  colorIdentity?: string;
-  imageUrl: Array<string>;
+  color?: Array<string>;
+  illustrations: Array<string>;
   type: string;
   subtype?: string;
   rarity: string;
@@ -13,5 +12,5 @@ export interface CardM {
   flavorText?: string;
   power?: string;
   toughness?: string;
-  loyalty?: number;
+  loyalty?: string;
 }

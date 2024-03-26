@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import './EditP.scss';
-import { EditPagePropsM } from "../../Models/Pages/edit-props.model";
 import { CardC } from "../../Components/Card/CardC";
+import { EditPagePropsM } from "../../Models/Pages/edit-props.model";
 
 export function EditP(props: EditPagePropsM): JSX.Element {
   const { card, saveCard, stopEditing } = props;
   const [editedCard, setEditedCard] = useState({ ...card });
-  const [variation, setVariation] = useState<number>(0);
+  const [illustration, setIllustration] = useState<number>(0);
 
   function handleChange(evt: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value } = evt.target;
@@ -28,32 +28,32 @@ export function EditP(props: EditPagePropsM): JSX.Element {
       </div>
       <div className="edit--content--item">
         <label>Color identity</label>
-        <input type="text" name="colorIdentity" value={editedCard.colorIdentity || ''} onChange={handleChange} />
+        <input type="text" name="colorIdentity" value={editedCard.color || ''} onChange={handleChange} />
       </div>
       <div className="edit--content--item">
         <label>Image variations</label>
         <div className="edit--content--item--array">
-          {editedCard.imageUrl?.map((line, index) => (
+          {editedCard.illustrations.map((line, index) => (
             <div key={index} className="edit--content--item--array--item">
               <input
                 type="text"
                 name={`imageUrl-${index}`}
                 value={line}
                 onChange={(evt) => {
-                  const newImages = [...editedCard.imageUrl];
+                  const newImages = [...editedCard.illustrations];
                   newImages[index] = evt.target.value;
                   setEditedCard(prev => ({ ...prev, imageUrl: newImages }));
                 }}
               />
               <button onClick={() => {
-                const newImages = [...editedCard.imageUrl];
+                const newImages = [...editedCard.illustrations];
                 newImages.splice(index, 1);
                 setEditedCard(prev => ({ ...prev, imageUrl: newImages }));
               }}>Remove</button>
             </div>
           ))}
           <button onClick={() => {
-            const newImages = [...editedCard.imageUrl, "Image url"];
+            const newImages = [...editedCard.illustrations, "Image url"];
             setEditedCard(prev => ({ ...prev, imageUrl: newImages }));
           }}>Add Variation</button>
         </div>
@@ -124,7 +124,7 @@ export function EditP(props: EditPagePropsM): JSX.Element {
       </div>
     </div>
     <div className="edit--card">
-      <CardC card={editedCard} variation={variation} updateVariation={setVariation} />
+      <CardC card={editedCard} illustration={illustration} updateIllustration={setIllustration} />
     </div>
   </div>;
 }

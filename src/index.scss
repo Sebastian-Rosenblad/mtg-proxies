@@ -61,6 +61,10 @@ h3 {
   &.icon--11 { background-image: url(/../public/images/symbols/11.png); }
   &.icon--12 { background-image: url(/../public/images/symbols/12.png); }
   &.icon--T { background-image: url(/../public/images/symbols/T.png); }
+  &.small {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 button {

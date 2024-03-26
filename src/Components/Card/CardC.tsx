@@ -1,35 +1,35 @@
 import React, { useState } from "react";
 import './CardC.scss';
 import { CardComponentPropsM } from "../../Models/Components/card-props.model";
-import { CardM } from "../../Models/card.model";
-import { getColorIdentityName, getColors, getStats } from "../../Functions/card.functions";
+import { getCardColor, getCardStats, getColorName } from "../../Functions/card.functions";
 
 export function CardC(props: CardComponentPropsM): JSX.Element {
+  const { card, illustration, updateIllustration } = props;
+
   function cycleVariation() {
-    if (props.updateVariation && props.variation !== undefined) props.updateVariation((props.variation + 1) % props.card.imageUrl.length);
+    if (updateIllustration && illustration !== undefined) updateIllustration((illustration + 1) % card.illustrations.length);
   }
 
-  const card: CardM = props.card;
   const cardClasses = (): string => {
     let c: Array<string> = ["card"];
     if (card.text.length > 0)
       c.push("has-text");
-    if (getStats(card) !== "")
+    if (getCardStats(card) !== "")
       c.push("has-stats");
     return c.join(" ");
   };
   const contentClasses = (): string => {
-    return ["card--content", "card--color-" + getColorIdentityName(getColors(card))].join(" ");
+    return ["card--content", "card--color-" + getColorName(getCardColor(card))].join(" ");
   }
   function getTitleClasses(): string {
     let classes: Array<string> = ["card--body--title"];
-    if (getStats(card) !== "" && card.text.length === 0) classes.push("move-up");
+    if (getCardStats(card) !== "" && card.text.length === 0) classes.push("move-up");
     return classes.join(" ");
   }
   function getTextClasses(): string {
     let classes: Array<string> = ["card--body--text"];
     if (textShouldBeCentered()) classes.push("center");
-    if (getStats(card) !== "") classes.push("has-stats");
+    if (getCardStats(card) !== "") classes.push("has-stats");
     return classes.join(" ");
   }
   
@@ -91,7 +91,7 @@ export function CardC(props: CardComponentPropsM): JSX.Element {
       </div>
       <div
         className="card--art"
-        style={{backgroundImage: 'url("/images/art/' + card.imageUrl[props.variation || 0] + '.png")'}}
+        style={{backgroundImage: 'url("/images/art/' + card.illustrations[props.illustration || 0] + '.png")'}}
         onClick={cycleVariation}
       ></div>
       <div className="card--body">
@@ -105,7 +105,7 @@ export function CardC(props: CardComponentPropsM): JSX.Element {
           <div className="card--body--title--right-border"></div>
         </div>
         {card.text.length > 0 && getText()}
-        {getStats(card) && <p className="card--body--stats">{getStats(card)}</p>}
+        {getCardStats(card) && <p className="card--body--stats">{getCardStats(card)}</p>}
       </div>
     </div>
   </div>;

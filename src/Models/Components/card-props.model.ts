@@ -2,6 +2,6 @@ import { CardM } from "../card.model";
 
 export interface CardComponentPropsM {
   card: CardM;
-  variation?: number;
-  updateVariation?: (newVariation: number) => void;
+  illustration?: number;
+  updateIllustration?: (newIllustration: number) => void;
 }

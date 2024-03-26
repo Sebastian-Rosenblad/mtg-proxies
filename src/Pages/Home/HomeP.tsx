@@ -3,7 +3,7 @@ import './HomeP.scss';
 import { HomePagePropsM } from "../../Models/Pages/home-props.model";
 import { CardLineC } from "../../Components/CardLine/CardLineC";
 import { CardM } from "../../Models/card.model";
-import { getColors, getManaValue } from "../../Functions/card.functions";
+import { getCardColorIdentity, getCardManaValue } from "../../Functions/card.functions";
 
 export function HomeP(props: HomePagePropsM): JSX.Element {
   const { cards, createCard, editCard, deleteCard } = props;
@@ -11,7 +11,7 @@ export function HomeP(props: HomePagePropsM): JSX.Element {
   function sort(a: CardM, b: CardM): number {
     if (a.type.includes("Emblem") !== b.type.includes("Emblem")) return a.type.includes("Emblem") ? 1 : -1;
     if (a.type.includes("Token") !== b.type.includes("Token")) return a.type.includes("Token") ? 1 : -1;
-    const colors: Array<Array<string>> = [getColors(a), getColors(b)];
+    const colors: Array<Array<string>> = [getCardColorIdentity(a), getCardColorIdentity(b)];
     const colorSortOrder: Array<string> = ["green", "white", "red", "black", "blue", "colorless"];
     if (colors[0].join("") !== colors[1].join("")) {
       if (colors[0].length !== colors[1].length) return colors[0].length - colors[1].length;
@@ -31,7 +31,7 @@ export function HomeP(props: HomePagePropsM): JSX.Element {
       if (aHasType !== bHasType) return aHasType ? -1 : 1;
       if (aHasType && bHasType) break;
     }
-    const manaValues: Array<number> = [getManaValue(a), getManaValue(b)];
+    const manaValues: Array<number> = [getCardManaValue(a), getCardManaValue(b)];
     if (manaValues[0] !== manaValues[1]) return manaValues[0] - manaValues[1];
     if (a.power && b.power) {
       const powers: Array<number> = [isNaN(parseInt(a.power)) ? 0 : parseInt(a.power), isNaN(parseInt(b.power)) ? 0 : parseInt(b.power)];
@@ -41,7 +41,10 @@ export function HomeP(props: HomePagePropsM): JSX.Element {
       const toughnesses: Array<number> = [isNaN(parseInt(a.toughness)) ? 0 : parseInt(a.toughness), isNaN(parseInt(b.toughness)) ? 0 : parseInt(b.toughness)];
       if (toughnesses[0] !== toughnesses[1]) return toughnesses[0] - toughnesses[1];
     }
-    if (a.loyalty && b.loyalty && a.loyalty !== b.loyalty) return a.loyalty - b.loyalty;
+    if (a.loyalty && b.loyalty) {
+      const loyalties: Array<number> = [isNaN(parseInt(a.loyalty)) ? 0 : parseInt(a.loyalty), isNaN(parseInt(b.loyalty)) ? 0 : parseInt(b.loyalty)];
+      if (loyalties[0] !== loyalties[1]) return loyalties[0] - loyalties[1];
+    }
     return a.name.localeCompare(b.name);
   }
 

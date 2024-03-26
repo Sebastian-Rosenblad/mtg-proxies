@@ -8,9 +8,7 @@ export class SaveManager {
   }
   static loadFromLocalStorage(): Array<CardM> {
     const cardsString: string | null = localStorage.getItem(this.KEY);
-    if (cardsString !== null) {
-      return JSON.parse(cardsString);
-    }
+    if (cardsString !== null) return JSON.parse(cardsString);
     return [];
   }
   static exportToFile(cards: Array<CardM>): void {
@@ -23,10 +21,13 @@ export class SaveManager {
     downloadAnchorNode.remove();
   }
   static async importFromFile(): Promise<Array<CardM>> {
-    const response = await fetch(`/mtg-card-database.json`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    let data: Array<CardM> = [];
+    try {
+      const response = await fetch(`/mtg-card-database.json`);
+      data = await response.json();
+    } catch {
+      console.error("Couldn't load data, try running: npm run create-database");
     }
-    return await response.json();
+    return data;
   }
 }
