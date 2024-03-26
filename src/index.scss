@@ -1,0 +1,68 @@
+body {
+  margin: 0px;
+}
+h1, h2, h3, p, li, button, label, input, textarea, select, option {
+  font-family: 'Courier New', Courier, monospace;
+  margin: 0px;
+  font-size: 1rem;
+  color: #000;
+}
+h1 {
+  font-size: 1.6rem;
+}
+h2 {
+  font-size: 1.4rem;
+}
+h3 {
+  font-size: 1.2rem;
+}
+
+.inline-icon {
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  background-size: contain;
+  border-radius: 50%;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  &.icon--W { background-image: url(/../public/images/symbols/W.png); }
+  &.icon--U { background-image: url(/../public/images/symbols/U.png); }
+  &.icon--B { background-image: url(/../public/images/symbols/B.png); }
+  &.icon--R { background-image: url(/../public/images/symbols/R.png); }
+  &.icon--G { background-image: url(/../public/images/symbols/G.png); }
+  &.icon--C { background-image: url(/../public/images/symbols/C.png); }
+  &.icon--BG { background-image: url(/../public/images/symbols/BG.png); }
+  &.icon--BR { background-image: url(/../public/images/symbols/BR.png); }
+  &.icon--BP { background-image: url(/../public/images/symbols/BP.png); }
+  &.icon--GU { background-image: url(/../public/images/symbols/GU.png); }
+  &.icon--GW { background-image: url(/../public/images/symbols/GW.png); }
+  &.icon--GP { background-image: url(/../public/images/symbols/GP.png); }
+  &.icon--RG { background-image: url(/../public/images/symbols/RG.png); }
+  &.icon--RW { background-image: url(/../public/images/symbols/RW.png); }
+  &.icon--RP { background-image: url(/../public/images/symbols/RP.png); }
+  &.icon--UB { background-image: url(/../public/images/symbols/UB.png); }
+  &.icon--UR { background-image: url(/../public/images/symbols/UR.png); }
+  &.icon--UP { background-image: url(/../public/images/symbols/UP.png); }
+  &.icon--WB { background-image: url(/../public/images/symbols/WB.png); }
+  &.icon--WU { background-image: url(/../public/images/symbols/WU.png); }
+  &.icon--WP { background-image: url(/../public/images/symbols/WP.png); }
+  &.icon--S { background-image: url(/../public/images/symbols/S.png); }
+  &.icon--X { background-image: url(/../public/images/symbols/X.png); }
+  &.icon--0 { background-image: url(/../public/images/symbols/0.png); }
+  &.icon--1 { background-image: url(/../public/images/symbols/1.png); }
+  &.icon--2 { background-image: url(/../public/images/symbols/2.png); }
+  &.icon--3 { background-image: url(/../public/images/symbols/3.png); }
+  &.icon--4 { background-image: url(/../public/images/symbols/4.png); }
+  &.icon--5 { background-image: url(/../public/images/symbols/5.png); }
+  &.icon--6 { background-image: url(/../public/images/symbols/6.png); }
+  &.icon--7 { background-image: url(/../public/images/symbols/7.png); }
+  &.icon--8 { background-image: url(/../public/images/symbols/8.png); }
+  &.icon--9 { background-image: url(/../public/images/symbols/9.png); }
+  &.icon--10 { background-image: url(/../public/images/symbols/10.png); }
+  &.icon--11 { background-image: url(/../public/images/symbols/11.png); }
+  &.icon--12 { background-image: url(/../public/images/symbols/12.png); }
+  &.icon--T { background-image: url(/../public/images/symbols/T.png); }
+}
+
+button {
+  cursor: pointer;
+}
