@@ -19,7 +19,7 @@ export function CardC(props: CardComponentPropsM): JSX.Element {
     return c.join(" ");
   };
   const contentClasses = (): string => {
-    return ["card--content", "card--color-" + getColorName(getCardColor(card))].join(" ");
+    return ["card--content", "card--color-" + getColorName(getCardColor(card)).toLocaleLowerCase()].join(" ");
   }
   function getTitleClasses(): string {
     let classes: Array<string> = ["card--body--title"];

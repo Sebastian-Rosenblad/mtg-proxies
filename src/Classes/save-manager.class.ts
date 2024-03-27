@@ -23,7 +23,7 @@ export class SaveManager {
   static async importFromFile(): Promise<Array<CardM>> {
     let data: Array<CardM> = [];
     try {
-      const response = await fetch(`/mtg-card-database.json`);
+      const response = await fetch('/mtg-card-database.json');
       data = await response.json();
     } catch {
       console.error("Couldn't load data, try running: npm run create-database");

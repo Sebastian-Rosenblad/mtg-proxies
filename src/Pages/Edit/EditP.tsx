@@ -27,8 +27,8 @@ export function EditP(props: EditPagePropsM): JSX.Element {
         <input type="text" name="manaCost" value={editedCard.manaCost || ''} onChange={handleChange} />
       </div>
       <div className="edit--content--item">
-        <label>Color identity</label>
-        <input type="text" name="colorIdentity" value={editedCard.color || ''} onChange={handleChange} />
+        <label>Color override</label>
+        <input type="text" name="color" value={editedCard.color?.join(",") || ''} onChange={(evt) => { setEditedCard(prev => ({ ...prev, color: evt.target.value.split(",") })); }} />
       </div>
       <div className="edit--content--item">
         <label>Image variations</label>

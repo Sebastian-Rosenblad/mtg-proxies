@@ -20,7 +20,7 @@ export function createNewCard(ids: Array<string>): CardM {
 
 export function getCardColor(card: CardM): Array<string> {
   if (card.color) return card.color;
-  if (card.type.includes("Land") && card.subtype) getColorFromLandtype(card.subtype);
+  if (card.type.includes("Land") && card.subtype) return getColorFromLandtype(card.subtype);
   if (!card.manaCost) return ["colorless"];
   return getColorFromText(card.manaCost);
 }

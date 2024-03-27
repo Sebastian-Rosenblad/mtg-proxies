@@ -1,7 +1,7 @@
 import React from "react";
 import './CardLineC.scss';
 import { CardLinePropsM } from "../../Models/Components/card-line-props.model";
-import { getCardColorIdentity, getCardStats, getColorIcons } from "../../Functions/card.functions";
+import { getCardColor, getCardStats, getColorIcons } from "../../Functions/card.functions";
 
 export function CardLineC(props: CardLinePropsM): JSX.Element {
   function ToJSX(text: string, key?: string, className?: string): JSX.Element {
@@ -21,7 +21,7 @@ export function CardLineC(props: CardLinePropsM): JSX.Element {
   }
 
   return <div className="card-line" onClick={props.editCard}>
-    {ToJSX(getColorIcons(getCardColorIdentity(props.card)).join(""), undefined, "card-line--color")}
+    {ToJSX(getColorIcons(getCardColor(props.card)).join(""), undefined, "card-line--color")}
     <p className="card-line--stats">{getCardStats(props.card)}</p>
     <p className="card-line--name">{props.card.name}</p>
     <p className="card-line--type">{props.card.type}</p>
