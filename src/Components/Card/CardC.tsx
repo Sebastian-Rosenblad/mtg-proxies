@@ -16,6 +16,7 @@ export function CardC(props: CardComponentPropsM): JSX.Element {
       c.push("has-text");
     if (getCardStats(card) !== "")
       c.push("has-stats");
+    c.push((card.border || "black") + "-border");
     return c.join(" ");
   };
   const contentClasses = (): string => {

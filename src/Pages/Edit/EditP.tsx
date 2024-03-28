@@ -7,6 +7,7 @@ import { InputTextareaC } from "../../Components/InputTextarea/InputTextareaC";
 import { InputTextArrayC } from "../../Components/InputTextArray/InputTextArrayC";
 import { InputTextareaArrayC } from "../../Components/InputTextareaArray/InputTextareaArrayC";
 import { CardM } from "../../Models/card.model";
+import { InputDropDownC } from "../../Components/InputDropDown/InputDropDownC";
 
 interface FieldM {
   type: "text" | "textarea" | "text-array" | "textarea-array";
@@ -96,6 +97,14 @@ export function EditP(props: EditPagePropsM): JSX.Element {
           singular={field.singular || ""}
         />
       )}
+      <InputDropDownC
+        id="edit--content--drop-down"
+        label="Border"
+        undefinable={true}
+        options={[{ value: "black", name: "Black" }, { value: "white", name: "White" }, { value: "borderless", name: "Borderless" }]}
+        value={editingCard.border || "black"}
+        updateValue={(value: string) => handleChange("border", value)}
+      />
       <div className="edit--content--buttons">
         {isChanged && <button onClick={handleSave}>Save</button>}
         <button onClick={stopEditing}>Back</button>

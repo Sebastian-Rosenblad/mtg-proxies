@@ -92,7 +92,7 @@ export function HomeP(props: HomePagePropsM): JSX.Element {
     <div className={cardView ? "home--cards" : "home--list"}>
       {cardView && cards.filter(filter).sort(sort).map(card =>
         card.illustrations.map((illustration, i) =>
-          <div key={card.id + "-" + illustration} className="home--cards--card">
+          <div key={card.id + "-" + illustration} className="home--cards--card" onClick={() => editCard(card)}>
             <div className="home--cards--card--shrink">
               <CardC card={card} illustration={i} />
             </div>

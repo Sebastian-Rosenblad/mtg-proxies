@@ -13,4 +13,5 @@ export interface CardM {
   power?: string;
   toughness?: string;
   loyalty?: string;
+  border?: string;
 }
