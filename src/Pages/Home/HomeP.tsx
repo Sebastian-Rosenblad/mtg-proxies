@@ -1,13 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import './HomeP.scss';
 import { HomePagePropsM } from "../../Models/Pages/home-props.model";
 import { CardLineC } from "../../Components/CardLine/CardLineC";
+import { InputDropDownC } from "../../Components/InputDropDown/InputDropDownC";
 import { CardM } from "../../Models/card.model";
 import { getCardColorIdentity, getCardManaValue } from "../../Functions/card.functions";
+import { FiltersM } from "../../Models/filters.model";
+import { SaveManager } from "../../Classes/save-manager.class";
+import { InputTextC } from "../../Components/InputText/InputTextC";
 
 export function HomeP(props: HomePagePropsM): JSX.Element {
   const { cards, createCard, editCard, deleteCard } = props;
+  const [filters, setFilters] = useState<FiltersM>(SaveManager.loadFilters());
 
+  useEffect(() => {
+    SaveManager.saveFilters(filters);
+  }, [filters]);
+
+  function filter(card: CardM): boolean {
+    if (filters.set !== undefined && card.set !== filters.set) return false;
+    if (filters.type !== undefined && !(card.type.toLocaleLowerCase().includes(filters.type.toLocaleLowerCase()) || card.subtype?.toLocaleLowerCase().includes(filters.type.toLocaleLowerCase()))) return false;
+    return true;
+  }
   function sort(a: CardM, b: CardM): number {
     if (a.type.includes("Emblem") !== b.type.includes("Emblem")) return a.type.includes("Emblem") ? 1 : -1;
     if (a.type.includes("Token") !== b.type.includes("Token")) return a.type.includes("Token") ? 1 : -1;
@@ -15,8 +29,8 @@ export function HomeP(props: HomePagePropsM): JSX.Element {
     const colorSortOrder: Array<string> = ["green", "white", "red", "black", "blue", "colorless"];
     if (colors[0].join("") !== colors[1].join("")) {
       if (colors[0].length !== colors[1].length) return colors[0].length - colors[1].length;
-      let sortedColorsA = colors[0].sort((c1, c2) => colorSortOrder.indexOf(c1) - colorSortOrder.indexOf(c2));
-      let sortedColorsB = colors[1].sort((c1, c2) => colorSortOrder.indexOf(c1) - colorSortOrder.indexOf(c2));
+      let sortedColorsA = [...colors[0]].sort((c1, c2) => colorSortOrder.indexOf(c1) - colorSortOrder.indexOf(c2));
+      let sortedColorsB = [...colors[1]].sort((c1, c2) => colorSortOrder.indexOf(c1) - colorSortOrder.indexOf(c2));
       for (let i = 0; i < Math.min(sortedColorsA.length, sortedColorsB.length); i++) {
         if (sortedColorsA[i] !== sortedColorsB[i]) {
           return colorSortOrder.indexOf(sortedColorsA[i]) - colorSortOrder.indexOf(sortedColorsB[i]);
@@ -48,14 +62,34 @@ export function HomeP(props: HomePagePropsM): JSX.Element {
     return a.name.localeCompare(b.name);
   }
 
+  const uniqueSets = (): Array<string> => {
+    let sets: Set<string> = new Set<string>(cards.map(card => card.set));
+    return Array.from(sets);
+  }
+
   return <div className="home">
     <div className="home--header">
       <button onClick={createCard}>Create New Card</button>
+      <p>Filter:</p>
+      <InputDropDownC
+        id="home-set-filter"
+        label="Set"
+        undefinable={true}
+        options={uniqueSets().map(set => { return { value: set, name: set }; })}
+        value={filters.set}
+        updateValue={(value: string | undefined) => setFilters({ ...filters, set: value })}
+      />
+      <InputTextC
+        label="Type/Subtype"
+        name="type"
+        value={filters.type || ""}
+        updateValue={(value: string | undefined) => setFilters({ ...filters, type: value === "" ? undefined : value })}
+      />
     </div>
     <div className="home--list">
-      {cards.sort(sort).map((card) => (
-        <CardLineC key={card.id} card={card} editCard={() => editCard(card)} deleteCard={() => deleteCard(card)} />
-      ))}
+      {cards.filter(filter).sort(sort).map((card) => 
+        <CardLineC key={card.id} card={card} editCard={() => editCard(card)} deleteCard={deleteCard ? () => deleteCard(card) : undefined} />
+      )}
     </div>
   </div>;
 }

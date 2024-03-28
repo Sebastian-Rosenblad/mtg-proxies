@@ -1,4 +1,5 @@
 import { CardM } from "../Models/card.model";
+import { FiltersM } from "../Models/filters.model";
 
 export class SaveManager {
   protected static KEY: string = "mtg-cards";
@@ -29,5 +30,14 @@ export class SaveManager {
       console.error("Couldn't load data, try running: npm run create-database");
     }
     return data;
+  }
+
+  static saveFilters(filters: FiltersM): void {
+    localStorage.setItem(this.KEY + "-filters", JSON.stringify(filters));
+  }
+  static loadFilters(): FiltersM {
+    const loadString: string | null = localStorage.getItem(this.KEY + "-filters");
+    if (loadString !== null) return JSON.parse(loadString);
+    return {} as FiltersM;
   }
 }

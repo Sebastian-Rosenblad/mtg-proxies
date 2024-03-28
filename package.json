@@ -23,7 +23,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "create-database": "node create-database.js"
+    "create-database": "node create-database.js",
+    "create-component": "node create-component.js"
   },
   "eslintConfig": {
     "extends": [

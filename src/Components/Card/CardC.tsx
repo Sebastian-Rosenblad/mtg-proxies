@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import './CardC.scss';
 import { CardComponentPropsM } from "../../Models/Components/card-props.model";
 import { getCardColor, getCardStats, getColorName } from "../../Functions/card.functions";
@@ -19,7 +19,7 @@ export function CardC(props: CardComponentPropsM): JSX.Element {
     return c.join(" ");
   };
   const contentClasses = (): string => {
-    return ["card--content", "card--color-" + getColorName(getCardColor(card)).toLocaleLowerCase()].join(" ");
+    return ["card--content", "card--color-" + (card.type === "Emblem" ? "emblem" : getColorName(getCardColor(card)).toLocaleLowerCase())].join(" ");
   }
   function getTitleClasses(): string {
     let classes: Array<string> = ["card--body--title"];

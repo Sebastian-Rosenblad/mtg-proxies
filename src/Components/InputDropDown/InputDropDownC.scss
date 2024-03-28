@@ -1,0 +1,12 @@
+.input-drop-down {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  label {
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  select {
+    width: 100%;
+  }
+}

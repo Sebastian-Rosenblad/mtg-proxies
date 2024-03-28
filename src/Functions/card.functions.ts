@@ -13,7 +13,7 @@ export function createNewCard(ids: Array<string>): CardM {
     illustrations: [],
     type: "Creature",
     rarity: "Common",
-    set: "",
+    set: "Default",
     text: []
   }
 }
@@ -53,9 +53,9 @@ function getColorFromText(text: string): Array<string> {
   return Array.from(colors);
 }
 export function getColorName(colors: Array<string>): string {
-  if (colors.length === 1) return colors[0];
+  if (colors.length === 1 && colorKeys.hasOwnProperty(colors[0])) return colors[0];
   const order = ["white", "blue", "black", "red", "green"];
-  const sortedColors = colors.sort((a, b) => order.indexOf(a) - order.indexOf(b)).join(",");
+  const sortedColors = [...colors].sort((a, b) => order.indexOf(a) - order.indexOf(b)).join(",");
   const colorCombinations: { [combination: string]: string } = {
     "white,blue": "Azorius",
     "white,black": "Orzhov",

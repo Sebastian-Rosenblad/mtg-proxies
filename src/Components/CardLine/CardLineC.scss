@@ -22,11 +22,34 @@
   &--stats {
     width: 45px;
   }
+  &--rarity {
+    width: 30px;
+    &--icon {
+      width: 18px;
+      height: 18px;
+      background-color: #333;
+      border: 1px solid;
+      border-radius: 50%;
+      box-sizing: border-box;
+      &.uncommon {
+        background: linear-gradient(120deg, #647e88 0%, #d9eaf3 50%, #647e88 100%);
+      }
+      &.rare {
+        background: linear-gradient(120deg, #977e46 0%, #ebd491 50%, #977e46 100%);
+      }
+      &.mythic {
+        background: linear-gradient(120deg, #c24825 0%, #f39823 50%, #c24825 100%);
+      }
+    }
+  }
   &--name {
     width: 300px;
   }
   &--type {
     width: 300px;
+  }
+  &--set {
+    width: 100px;
   }
   &:hover {
     background-color: #eee;

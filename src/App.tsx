@@ -40,7 +40,6 @@ function App() {
   }
   function saveCard(savedCard: CardM) {
     const newCards: Array<CardM> = cards.map(card => card.id === savedCard.id ? savedCard : card);
-    setEditCard(undefined);
     setCards(newCards);
     SaveManager.saveToLocalStorage(newCards);
   }
@@ -49,6 +48,7 @@ function App() {
   }
   function deleteCard(cardToDelete: CardM) {
     const newCards: Array<CardM> = cards.filter(card => card.id !== cardToDelete.id);
+    setEditCard(undefined);
     setCards(newCards);
     SaveManager.saveToLocalStorage(newCards);
   }
@@ -73,7 +73,6 @@ function App() {
             cards={cards}
             createCard={createCard}
             editCard={startEditingCard}
-            deleteCard={deleteCard}
           />
         } />
         <Route path='/edit/' element={ editCard !== undefined &&
@@ -81,6 +80,7 @@ function App() {
             card={editCard}
             saveCard={saveCard}
             stopEditing={stopEditingCard}
+            deleteCard={deleteCard}
           />
         } />
       </Routes>

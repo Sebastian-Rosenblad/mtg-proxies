@@ -1,0 +1,14 @@
+.input-textarea {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  label {
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  textarea {
+    width: 100%;
+    min-height: 54px;
+    resize: vertical;
+  }
+}

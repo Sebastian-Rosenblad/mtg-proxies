@@ -1,130 +1,111 @@
 import React, { useState } from "react";
 import './EditP.scss';
-import { CardC } from "../../Components/Card/CardC";
 import { EditPagePropsM } from "../../Models/Pages/edit-props.model";
+import { CardC } from "../../Components/Card/CardC";
+import { InputTextC } from "../../Components/InputText/InputTextC";
+import { InputTextareaC } from "../../Components/InputTextarea/InputTextareaC";
+import { InputTextArrayC } from "../../Components/InputTextArray/InputTextArrayC";
+import { InputTextareaArrayC } from "../../Components/InputTextareaArray/InputTextareaArrayC";
+import { CardM } from "../../Models/card.model";
+
+interface FieldM {
+  type: "text" | "textarea" | "text-array" | "textarea-array";
+  label: string;
+  key: keyof CardM;
+  singular?: string;
+}
 
 export function EditP(props: EditPagePropsM): JSX.Element {
-  const { card, saveCard, stopEditing } = props;
-  const [editedCard, setEditedCard] = useState({ ...card });
+  const { saveCard, stopEditing, deleteCard } = props;
+  const [editingCard, setEditingCard] = useState<CardM>(props.card);
+  const [isChanged, setIsChanged] = useState<boolean>(false);
   const [illustration, setIllustration] = useState<number>(0);
+  const [deleteConfirmation, setDeleteConfirmation] = useState<number>(0);
 
-  function handleChange(evt: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    const { name, value } = evt.target;
-    setEditedCard(prev => ({ ...prev, [name]: value }));
+  function handleDeleteClick() {
+    if (!deleteConfirmation) setDeleteConfirmation(Date.now());
+    else if (Date.now() <= deleteConfirmation + 2000 && deleteCard) deleteCard(editingCard);
+  }
+  function handleChange(key: keyof CardM, value: string | Array<string>) {
+    let card: CardM = { ...editingCard, [key]: value };
+    setEditingCard(removeUndefined({ ...card }));
+    setIsChanged(true);
+  }
+  function removeUndefined(card: CardM): CardM {
+    if (card.hasOwnProperty("manaCost") && !card.manaCost) delete card.manaCost;
+    if (card.hasOwnProperty("color") && card.color?.length === 0) delete card.color;
+    if (card.hasOwnProperty("subtype") && !card.subtype) delete card.subtype;
+    if (card.hasOwnProperty("flavorText") && !card.flavorText) delete card.flavorText;
+    if (card.hasOwnProperty("power") && !card.power) delete card.power;
+    if (card.hasOwnProperty("toughness") && !card.toughness) delete card.toughness;
+    if (card.hasOwnProperty("loyalty") && !card.loyalty) delete card.loyalty;
+    return card;
   }
   function handleSave() {
-    saveCard(editedCard);
+    saveCard(editingCard);
+    setIsChanged(false);
   }
+
+  const fields: Array<FieldM> = [
+    { type: "text", label: "Name", key: "name" },
+    { type: "text", label: "Mana value", key: "manaCost" },
+    { type: "text-array", label: "Override color", key: "color", singular: "override color" },
+    { type: "text-array", label: "Illustrations", key: "illustrations", singular: "illustration" },
+    { type: "text", label: "Type", key: "type" },
+    { type: "text", label: "Subtype", key: "subtype" },
+    { type: "text", label: "Rarity", key: "rarity" },
+    { type: "text", label: "Set", key: "set" },
+    { type: "textarea-array", label: "Abilities", key: "text", singular: "ability" },
+    { type: "textarea", label: "Flavor text", key: "flavorText" },
+    { type: "text", label: "Power", key: "power" },
+    { type: "text", label: "Toughness", key: "toughness" },
+    { type: "text", label: "Loyalty", key: "loyalty" }
+  ];
 
   return <div className="edit">
     <div className="edit--content">
-      <div className="edit--content--item">
-        <label>Name</label>
-        <input type="text" name="name" value={editedCard.name} onChange={handleChange} />
-      </div>
-      <div className="edit--content--item">
-        <label>Mana cost</label>
-        <input type="text" name="manaCost" value={editedCard.manaCost || ''} onChange={handleChange} />
-      </div>
-      <div className="edit--content--item">
-        <label>Color override</label>
-        <input type="text" name="color" value={editedCard.color?.join(",") || ''} onChange={(evt) => { setEditedCard(prev => ({ ...prev, color: evt.target.value.split(",") })); }} />
-      </div>
-      <div className="edit--content--item">
-        <label>Image variations</label>
-        <div className="edit--content--item--array">
-          {editedCard.illustrations.map((line, index) => (
-            <div key={index} className="edit--content--item--array--item">
-              <input
-                type="text"
-                name={`imageUrl-${index}`}
-                value={line}
-                onChange={(evt) => {
-                  const newImages = [...editedCard.illustrations];
-                  newImages[index] = evt.target.value;
-                  setEditedCard(prev => ({ ...prev, imageUrl: newImages }));
-                }}
-              />
-              <button onClick={() => {
-                const newImages = [...editedCard.illustrations];
-                newImages.splice(index, 1);
-                setEditedCard(prev => ({ ...prev, imageUrl: newImages }));
-              }}>Remove</button>
-            </div>
-          ))}
-          <button onClick={() => {
-            const newImages = [...editedCard.illustrations, "Image url"];
-            setEditedCard(prev => ({ ...prev, imageUrl: newImages }));
-          }}>Add Variation</button>
-        </div>
-      </div>
-      <div className="edit--content--item">
-        <label>Type</label>
-        <input type="text" name="type" value={editedCard.type} onChange={handleChange} />
-      </div>
-      <div className="edit--content--item">
-        <label>Subtype</label>
-        <input type="text" name="subtype" value={editedCard.subtype || ''} onChange={handleChange} />
-      </div>
-      <div className="edit--content--item">
-        <label>Rarity</label>
-        <input type="text" name="rarity" value={editedCard.rarity} onChange={handleChange} />
-      </div>
-      <div className="edit--content--item">
-        <label>Set</label>
-        <input type="text" name="set" value={editedCard.set} onChange={handleChange} />
-      </div>
-      <div className="edit--content--item">
-        <label>Abilities</label>
-        <div className="edit--content--item--array">
-          {editedCard.text.map((line, index) => (
-            <div key={index} className="edit--content--item--array--item">
-              <input
-                type="text"
-                name={`text-${index}`}
-                value={line}
-                onChange={(evt) => {
-                  const newText = [...editedCard.text];
-                  newText[index] = evt.target.value;
-                  setEditedCard(prev => ({ ...prev, text: newText }));
-                }}
-              />
-              <button onClick={() => {
-                const newText = [...editedCard.text];
-                newText.splice(index, 1);
-                setEditedCard(prev => ({ ...prev, text: newText }));
-              }}>Remove</button>
-            </div>
-          ))}
-          <button onClick={() => {
-            const newText = [...editedCard.text, "New ability"];
-            setEditedCard(prev => ({ ...prev, text: newText }));
-          }}>Add Ability</button>
-        </div>
-      </div>
-      <div className="edit--content--item">
-        <label>Flavor text</label>
-        <textarea name="flavorText" value={editedCard.flavorText || ''} onChange={handleChange} />
-      </div>
-      <div className="edit--content--item">
-        <label>Power</label>
-        <input type="text" name="power" value={editedCard.power || ''} onChange={handleChange} />
-      </div>
-      <div className="edit--content--item">
-        <label>Toughness</label>
-        <input type="text" name="toughness" value={editedCard.toughness || ''} onChange={handleChange} />
-      </div>
-      <div className="edit--content--item">
-        <label>Loyalty</label>
-        <input type="number" name="loyalty" value={editedCard.loyalty || ''} onChange={handleChange} />
-      </div>
-      <div className="edit--content--item">
-        <button onClick={handleSave}>Save</button>
-        <button onClick={stopEditing}>Cancel</button>
+      {fields.map((field: FieldM, index: number) =>
+        field.type === "text" ? <InputTextC
+          key={field.key + "-" + index}
+          label={field.label}
+          name={field.key}
+          value={editingCard[field.key] as string || ""}
+          updateValue={(value: string) => handleChange(field.key, value)}
+        /> :
+        field.type === "textarea" ? <InputTextareaC
+          key={field.key + "-" + index}
+          label={field.label}
+          name={field.key}
+          value={editingCard[field.key] as string || ""}
+          updateValue={(value: string) => handleChange(field.key, value)}
+        /> :
+        field.type === "text-array" ? <InputTextArrayC
+          key={field.key + "-" + index}
+          label={field.label}
+          name={field.key}
+          value={editingCard[field.key] as Array<string> || []}
+          updateValue={(value: Array<string>) => handleChange(field.key, value)}
+          singular={field.singular || ""}
+        /> :
+        <InputTextareaArrayC
+          key={field.key + "-" + index}
+          label={field.label}
+          name={field.key}
+          value={editingCard[field.key] as Array<string> || []}
+          updateValue={(value: Array<string>) => handleChange(field.key, value)}
+          singular={field.singular || ""}
+        />
+      )}
+      <div className="edit--content--buttons">
+        {isChanged && <button onClick={handleSave}>Save</button>}
+        <button onClick={stopEditing}>Back</button>
+        {deleteCard && <button onClick={handleDeleteClick}>{Date.now() <= deleteConfirmation + 2000 ? "Confirm" : "Delete"}</button>}
       </div>
     </div>
     <div className="edit--card">
-      <CardC card={editedCard} illustration={illustration} updateIllustration={setIllustration} />
+      <div className="edit--card--shrink">
+        <CardC card={editingCard} illustration={illustration} updateIllustration={setIllustration} />
+      </div>
     </div>
   </div>;
 }

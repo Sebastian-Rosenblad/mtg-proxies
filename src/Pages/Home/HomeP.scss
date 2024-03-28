@@ -1,4 +1,13 @@
 .home {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  &--header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
   &--list {
     display: flex;
     align-items: center;
