@@ -8,10 +8,12 @@ import { getCardColorIdentity, getCardManaValue } from "../../Functions/card.fun
 import { FiltersM } from "../../Models/filters.model";
 import { SaveManager } from "../../Classes/save-manager.class";
 import { InputTextC } from "../../Components/InputText/InputTextC";
+import { CardC } from "../../Components/Card/CardC";
 
 export function HomeP(props: HomePagePropsM): JSX.Element {
   const { cards, createCard, editCard, deleteCard } = props;
   const [filters, setFilters] = useState<FiltersM>(SaveManager.loadFilters());
+  const [cardView, setCardView] = useState<boolean>(false);
 
   useEffect(() => {
     SaveManager.saveFilters(filters);
@@ -85,9 +87,19 @@ export function HomeP(props: HomePagePropsM): JSX.Element {
         value={filters.type || ""}
         updateValue={(value: string | undefined) => setFilters({ ...filters, type: value === "" ? undefined : value })}
       />
+      <button onClick={() => setCardView(!cardView)}>{cardView ? "List view" : "Card view"}</button>
     </div>
-    <div className="home--list">
-      {cards.filter(filter).sort(sort).map((card) => 
+    <div className={cardView ? "home--cards" : "home--list"}>
+      {cardView && cards.filter(filter).sort(sort).map(card =>
+        card.illustrations.map((illustration, i) =>
+          <div key={card.id + "-" + illustration} className="home--cards--card">
+            <div className="home--cards--card--shrink">
+              <CardC card={card} illustration={i} />
+            </div>
+          </div>
+        )
+      )}
+      {!cardView && cards.filter(filter).sort(sort).map(card =>
         <CardLineC key={card.id} card={card} editCard={() => editCard(card)} deleteCard={deleteCard ? () => deleteCard(card) : undefined} />
       )}
     </div>
