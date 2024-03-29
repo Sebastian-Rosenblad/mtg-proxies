@@ -3,12 +3,15 @@ import './App.scss';
 import { Link, NavigateFunction, Route, Routes, useNavigate } from 'react-router-dom';
 import { HomeP } from './Pages/Home/HomeP';
 import { EditP } from './Pages/Edit/EditP';
+import { SetsP } from './Pages/Sets/SetsP';
 import { CardM } from './Models/card.model';
 import { createNewCard } from './Functions/card.functions';
 import { SaveManager } from './Classes/save-manager.class';
+import { SetM } from './Models/set.model';
 
 function App() {
-  const [cards, setCards] = useState<Array<CardM>>(SaveManager.loadFromLocalStorage());
+  const [cards, setCards] = useState<Array<CardM>>(SaveManager.loadCardsFromLocalStorage());
+  const [sets, setSets] = useState<Array<SetM>>(SaveManager.loadSetsFromLocalStorage());
   const [editCard, setEditCard] = useState<CardM | undefined>(undefined);
   const [showSettings, setShowSettings] = useState<boolean>(false);
   let navigate: NavigateFunction = useNavigate();
@@ -18,15 +21,25 @@ function App() {
     else navigate('/');
   }, [editCard]);
 
-  function importFromFile() {
-    SaveManager.importFromFile().then((importedCards: Array<CardM>) => {
+  function importCardsFromFile() {
+    SaveManager.importCardsFromFile().then((importedCards: Array<CardM>) => {
       setCards(importedCards);
     }).catch(error => {
       console.error("Failed to load cards: " + error);
     });
   }
-  function exportToFile() {
-    SaveManager.exportToFile(cards);
+  function exportCardsToFile() {
+    SaveManager.exportCardsToFile(cards);
+  }
+  function importSetsFromFile() {
+    SaveManager.importSetsFromFile().then((importedSets: Array<SetM>) => {
+      setSets(importedSets);
+    }).catch(error => {
+      console.error("Failed to load sets: " + error);
+    });
+  }
+  function exportSetsToFile() {
+    SaveManager.exportSetsToFile(sets);
   }
 
   function createCard() {
@@ -40,7 +53,7 @@ function App() {
   function saveCard(savedCard: CardM) {
     const newCards: Array<CardM> = cards.map(card => card.id === savedCard.id ? savedCard : card);
     setCards(newCards);
-    SaveManager.saveToLocalStorage(newCards);
+    SaveManager.saveCardsToLocalStorage(newCards);
   }
   function stopEditingCard() {
     setEditCard(undefined);
@@ -49,7 +62,16 @@ function App() {
     const newCards: Array<CardM> = cards.filter(card => card.id !== cardToDelete.id);
     setEditCard(undefined);
     setCards(newCards);
-    SaveManager.saveToLocalStorage(newCards);
+    SaveManager.saveCardsToLocalStorage(newCards);
+  }
+
+  function updateSets(newSets: Array<SetM>) {
+    setSets(newSets);
+    SaveManager.saveSetsToLocalStorage(newSets);
+  }
+
+  function cardsSet(card: CardM): SetM {
+    return sets.find(set => card.set === set.id) || sets[0];
   }
   
   return (
@@ -57,12 +79,15 @@ function App() {
       <div className="App--header">
         <nav className="App--header--navigation">
           <Link to='/'><button>Home</button></Link>
+          <Link to='/sets/'><button>Sets</button></Link>
         </nav>
         <div className="App--header--settings">
           <button onClick={() => setShowSettings(!showSettings)}>Settings</button>
           {showSettings && <div className="App--header--settings--content">
-            <button onClick={importFromFile}>Load from file</button>
-            <button onClick={exportToFile}>Save to file</button>
+            <button onClick={importCardsFromFile}>Load cards from file</button>
+            <button onClick={exportCardsToFile}>Save cards to file</button>
+            <button onClick={importSetsFromFile}>Load sets from file</button>
+            <button onClick={exportSetsToFile}>Save sets to file</button>
           </div>}
         </div>
       </div>
@@ -70,6 +95,7 @@ function App() {
         <Route path='/' element={
           <HomeP
             cards={cards}
+            sets={sets}
             createCard={createCard}
             editCard={startEditingCard}
           />
@@ -77,9 +103,16 @@ function App() {
         <Route path='/edit/' element={ editCard !== undefined &&
           <EditP
             card={editCard}
+            sets={sets}
             saveCard={saveCard}
             stopEditing={stopEditingCard}
             deleteCard={deleteCard}
+          />
+        } />
+        <Route path='/sets/' element={
+          <SetsP
+            sets={sets}
+            updateSets={updateSets}
           />
         } />
       </Routes>

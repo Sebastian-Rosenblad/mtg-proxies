@@ -4,7 +4,7 @@ import { CardLinePropsM } from "../../Models/Components/card-line-props.model";
 import { getCardColor, getCardStats, getColorIcons } from "../../Functions/card.functions";
 
 export function CardLineC(props: CardLinePropsM): JSX.Element {
-  const { card, editCard, deleteCard } = props;
+  const { card, set, editCard, deleteCard } = props;
   function ToJSX(text: string, key?: string, className?: string): JSX.Element {
     let newtext: string = text.replace(/\((.*?)\)/g, '<i>($1)</i>');
     newtext = newtext.replace(/\{W\}/g, '<span class="inline-icon icon--W"></span>');
@@ -27,7 +27,7 @@ export function CardLineC(props: CardLinePropsM): JSX.Element {
     <div className="card-line--rarity"><div className={["card-line--rarity--icon", card.rarity.toLocaleLowerCase()].join(" ")}></div></div>
     <p className="card-line--name">{card.name}</p>
     <p className="card-line--type">{card.type}</p>
-    <p className="card-line--set">{card.set}</p>
+    <p className="card-line--set">{set.name}</p>
     {deleteCard && <button onClick={deleteCard}>delete</button>}
   </div>;
 }

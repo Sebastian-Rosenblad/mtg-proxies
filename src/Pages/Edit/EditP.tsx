@@ -8,16 +8,18 @@ import { InputTextArrayC } from "../../Components/InputTextArray/InputTextArrayC
 import { InputTextareaArrayC } from "../../Components/InputTextareaArray/InputTextareaArrayC";
 import { CardM } from "../../Models/card.model";
 import { InputDropDownC } from "../../Components/InputDropDown/InputDropDownC";
+import { getCardsSet } from "../../Functions/card.functions";
 
 interface FieldM {
-  type: "text" | "textarea" | "text-array" | "textarea-array";
+  type: "text" | "textarea" | "text-array" | "textarea-array" | "drop-down";
   label: string;
   key: keyof CardM;
   singular?: string;
+  options?: Array<{ value: string; name: string; }>;
 }
 
 export function EditP(props: EditPagePropsM): JSX.Element {
-  const { saveCard, stopEditing, deleteCard } = props;
+  const { sets, saveCard, stopEditing, deleteCard } = props;
   const [editingCard, setEditingCard] = useState<CardM>(props.card);
   const [isChanged, setIsChanged] = useState<boolean>(false);
   const [illustration, setIllustration] = useState<number>(0);
@@ -56,7 +58,7 @@ export function EditP(props: EditPagePropsM): JSX.Element {
     { type: "text", label: "Type", key: "type" },
     { type: "text", label: "Subtype", key: "subtype" },
     { type: "text", label: "Rarity", key: "rarity" },
-    { type: "text", label: "Set", key: "set" },
+    { type: "drop-down", label: "Set", key: "set", options: sets.map(set => { return { value: set.id, name: set.name }; }) },
     { type: "textarea-array", label: "Abilities", key: "text", singular: "ability" },
     { type: "textarea", label: "Flavor text", key: "flavorText" },
     { type: "text", label: "Power", key: "power" },
@@ -89,13 +91,21 @@ export function EditP(props: EditPagePropsM): JSX.Element {
           updateValue={(value: Array<string>) => handleChange(field.key, value)}
           singular={field.singular || ""}
         /> :
-        <InputTextareaArrayC
+        field.type === "textarea-array" ? <InputTextareaArrayC
           key={field.key + "-" + index}
           label={field.label}
           name={field.key}
           value={editingCard[field.key] as Array<string> || []}
           updateValue={(value: Array<string>) => handleChange(field.key, value)}
           singular={field.singular || ""}
+        /> :
+        <InputDropDownC
+          key={field.key + "-" + index}
+          id={field.key + "-" + index}
+          label={field.label}
+          options={field.options || []}
+          value={editingCard[field.key] as string}
+          updateValue={(value: string) => handleChange(field.key, value)}
         />
       )}
       <InputDropDownC
@@ -115,7 +125,7 @@ export function EditP(props: EditPagePropsM): JSX.Element {
     <div className="edit--right">
       <div className={["edit--right--card", cardSize].join(" ")}>
         <div className={["edit--right--card--shrink", cardSize].join(" ")}>
-          <CardC card={editingCard} illustration={illustration} updateIllustration={setIllustration} />
+          <CardC card={editingCard} set={getCardsSet(editingCard, sets)} illustration={illustration} updateIllustration={setIllustration} />
         </div>
       </div>
       <button onClick={() => setCardSize(cardSize === "small" ? "large" : "small")}>{cardSize === "small" ? "Large card" : "Small card"}</button>

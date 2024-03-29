@@ -4,7 +4,7 @@ import { CardComponentPropsM } from "../../Models/Components/card-props.model";
 import { getCardColor, getCardStats, getColorName } from "../../Functions/card.functions";
 
 export function CardC(props: CardComponentPropsM): JSX.Element {
-  const { card, illustration, updateIllustration } = props;
+  const { card, set, illustration, updateIllustration } = props;
 
   function cycleVariation() {
     if (updateIllustration && illustration !== undefined) updateIllustration((illustration + 1) % card.illustrations.length);
@@ -101,7 +101,7 @@ export function CardC(props: CardComponentPropsM): JSX.Element {
           <div className="card--body--title--content">
             {card.subtype && <p>{card.type} — {card.subtype}</p>}
             {!card.subtype && <p>{card.type}</p>}
-            <img className="card--body--title--content--set" src={"/images/sets/" + card.set.toLocaleLowerCase() + "-" + card.rarity.toLocaleLowerCase().split(" ")[0] + ".png"} />
+            <img className="card--body--title--content--set" src={"/images/sets/" + set.icon + "-" + card.rarity.toLocaleLowerCase().split(" ")[0] + ".png"} />
           </div>
           <div className="card--body--title--right-border"></div>
         </div>

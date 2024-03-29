@@ -4,14 +4,15 @@ import { HomePagePropsM } from "../../Models/Pages/home-props.model";
 import { CardLineC } from "../../Components/CardLine/CardLineC";
 import { InputDropDownC } from "../../Components/InputDropDown/InputDropDownC";
 import { CardM } from "../../Models/card.model";
-import { getCardColorIdentity, getCardManaValue } from "../../Functions/card.functions";
+import { getCardColorIdentity, getCardManaValue, getCardsSet } from "../../Functions/card.functions";
 import { FiltersM } from "../../Models/filters.model";
 import { SaveManager } from "../../Classes/save-manager.class";
 import { InputTextC } from "../../Components/InputText/InputTextC";
 import { CardC } from "../../Components/Card/CardC";
+import { SetM } from "../../Models/set.model";
 
 export function HomeP(props: HomePagePropsM): JSX.Element {
-  const { cards, createCard, editCard, deleteCard } = props;
+  const { cards, sets, createCard, editCard, deleteCard } = props;
   const [filters, setFilters] = useState<FiltersM>(SaveManager.loadFilters());
   const [cardView, setCardView] = useState<boolean>(false);
   const [cardSize, setCardSize] = useState<"small" | "large">("small");
@@ -65,11 +66,6 @@ export function HomeP(props: HomePagePropsM): JSX.Element {
     return a.name.localeCompare(b.name);
   }
 
-  const uniqueSets = (): Array<string> => {
-    let sets: Set<string> = new Set<string>(cards.map(card => card.set));
-    return Array.from(sets);
-  }
-
   return <div className="home">
     <div className="home--header">
       <button onClick={createCard}>Create New Card</button>
@@ -78,7 +74,7 @@ export function HomeP(props: HomePagePropsM): JSX.Element {
         id="home-set-filter"
         label="Set"
         undefinable={true}
-        options={uniqueSets().map(set => { return { value: set, name: set }; })}
+        options={sets.map(set => { return { value: set.id, name: set.name }; })}
         value={filters.set}
         updateValue={(value: string | undefined) => setFilters({ ...filters, set: value })}
       />
@@ -96,13 +92,13 @@ export function HomeP(props: HomePagePropsM): JSX.Element {
         card.illustrations.map((illustration, i) =>
           <div key={card.id + "-" + illustration} className={["home--cards--card", cardSize].join(" ")} onClick={() => editCard(card)}>
             <div className={["home--cards--card--shrink", cardSize].join(" ")}>
-              <CardC card={card} illustration={i} />
+              <CardC card={card} set={getCardsSet(card, sets)} illustration={i} />
             </div>
           </div>
         )
       )}
       {!cardView && cards.filter(filter).sort(sort).map(card =>
-        <CardLineC key={card.id} card={card} editCard={() => editCard(card)} deleteCard={deleteCard ? () => deleteCard(card) : undefined} />
+        <CardLineC key={card.id} card={card} set={getCardsSet(card, sets)} editCard={() => editCard(card)} deleteCard={deleteCard ? () => deleteCard(card) : undefined} />
       )}
     </div>
   </div>;

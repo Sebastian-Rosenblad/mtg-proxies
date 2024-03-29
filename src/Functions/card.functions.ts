@@ -1,10 +1,6 @@
 import { CardM } from "../Models/card.model";
-
-function getNewId(ids: Array<string>): string {
-  let id: string = Math.random().toString(16).slice(2, 8);
-  while (ids.includes(id)) id = Math.random().toString(16).slice(2, 8);
-  return id;
-}
+import { SetM } from "../Models/set.model";
+import { getNewId } from "./utils";
 
 export function createNewCard(ids: Array<string>): CardM {
   return {
@@ -106,4 +102,8 @@ export function getCardStats(card: CardM): string {
   if (card.power && card.toughness) return card.power + "/" + card.toughness;
   if (card.loyalty) return card.loyalty;
   return "";
+}
+
+export function getCardsSet(card: CardM, sets: Array<SetM>): SetM {
+  return sets.find(set => card.set === set.id) || sets[0];
 }
