@@ -1,4 +1,5 @@
-$card-display-size: 0.6;
+$card-display-size: 1;
+$card-small-display-size: .6;
 
 .edit {
   display: flex;
@@ -19,10 +20,20 @@ $card-display-size: 0.6;
   &--card {
     width: calc(745px * $card-display-size);
     height: calc(1045px * $card-display-size);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
     flex-shrink: 0;
+    &.small {
+      width: calc(745px * $card-small-display-size);
+      height: calc(1045px * $card-small-display-size);
+    }
     &--shrink {
       transform: scale($card-display-size);
       transform-origin: top left;
+      &.small {
+        transform: scale($card-small-display-size);
+      }
     }
   }
 }

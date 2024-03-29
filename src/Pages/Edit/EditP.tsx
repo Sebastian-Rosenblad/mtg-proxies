@@ -22,6 +22,7 @@ export function EditP(props: EditPagePropsM): JSX.Element {
   const [isChanged, setIsChanged] = useState<boolean>(false);
   const [illustration, setIllustration] = useState<number>(0);
   const [deleteConfirmation, setDeleteConfirmation] = useState<number>(0);
+  const [cardSize, setCardSize] = useState<"small" | "large">("small");
 
   function handleDeleteClick() {
     if (!deleteConfirmation) setDeleteConfirmation(Date.now());
@@ -100,7 +101,7 @@ export function EditP(props: EditPagePropsM): JSX.Element {
       <InputDropDownC
         id="edit--content--drop-down"
         label="Border"
-        undefinable={true}
+        undefinable={false}
         options={[{ value: "black", name: "Black" }, { value: "white", name: "White" }, { value: "borderless", name: "Borderless" }]}
         value={editingCard.border || "black"}
         updateValue={(value: string) => handleChange("border", value)}
@@ -111,8 +112,9 @@ export function EditP(props: EditPagePropsM): JSX.Element {
         {deleteCard && <button onClick={handleDeleteClick}>{Date.now() <= deleteConfirmation + 2000 ? "Confirm" : "Delete"}</button>}
       </div>
     </div>
-    <div className="edit--card">
-      <div className="edit--card--shrink">
+    <div className={["edit--card", cardSize].join(" ")}>
+      <button onClick={() => setCardSize(cardSize === "small" ? "large" : "small")}>{cardSize === "small" ? "Large card" : "Small card"}</button>
+      <div className={["edit--card--shrink", cardSize].join(" ")}>
         <CardC card={editingCard} illustration={illustration} updateIllustration={setIllustration} />
       </div>
     </div>

@@ -14,6 +14,7 @@ export function HomeP(props: HomePagePropsM): JSX.Element {
   const { cards, createCard, editCard, deleteCard } = props;
   const [filters, setFilters] = useState<FiltersM>(SaveManager.loadFilters());
   const [cardView, setCardView] = useState<boolean>(false);
+  const [cardSize, setCardSize] = useState<"small" | "large">("small");
 
   useEffect(() => {
     SaveManager.saveFilters(filters);
@@ -88,12 +89,13 @@ export function HomeP(props: HomePagePropsM): JSX.Element {
         updateValue={(value: string | undefined) => setFilters({ ...filters, type: value === "" ? undefined : value })}
       />
       <button onClick={() => setCardView(!cardView)}>{cardView ? "List view" : "Card view"}</button>
+      {cardView && <button onClick={() => setCardSize(cardSize === "small" ? "large" : "small")}>{cardSize === "small" ? "Large cards" : "Small cards"}</button>}
     </div>
     <div className={cardView ? "home--cards" : "home--list"}>
       {cardView && cards.filter(filter).sort(sort).map(card =>
         card.illustrations.map((illustration, i) =>
-          <div key={card.id + "-" + illustration} className="home--cards--card" onClick={() => editCard(card)}>
-            <div className="home--cards--card--shrink">
+          <div key={card.id + "-" + illustration} className={["home--cards--card", cardSize].join(" ")} onClick={() => editCard(card)}>
+            <div className={["home--cards--card--shrink", cardSize].join(" ")}>
               <CardC card={card} illustration={i} />
             </div>
           </div>
