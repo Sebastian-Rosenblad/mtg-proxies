@@ -112,11 +112,13 @@ export function EditP(props: EditPagePropsM): JSX.Element {
         {deleteCard && <button onClick={handleDeleteClick}>{Date.now() <= deleteConfirmation + 2000 ? "Confirm" : "Delete"}</button>}
       </div>
     </div>
-    <div className={["edit--card", cardSize].join(" ")}>
-      <button onClick={() => setCardSize(cardSize === "small" ? "large" : "small")}>{cardSize === "small" ? "Large card" : "Small card"}</button>
-      <div className={["edit--card--shrink", cardSize].join(" ")}>
-        <CardC card={editingCard} illustration={illustration} updateIllustration={setIllustration} />
+    <div className="edit--right">
+      <div className={["edit--right--card", cardSize].join(" ")}>
+        <div className={["edit--right--card--shrink", cardSize].join(" ")}>
+          <CardC card={editingCard} illustration={illustration} updateIllustration={setIllustration} />
+        </div>
       </div>
+      <button onClick={() => setCardSize(cardSize === "small" ? "large" : "small")}>{cardSize === "small" ? "Large card" : "Small card"}</button>
     </div>
   </div>;
 }

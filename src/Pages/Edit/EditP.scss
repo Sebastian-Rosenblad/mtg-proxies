@@ -17,22 +17,24 @@ $card-small-display-size: .6;
       gap: 10px;
     }
   }
-  &--card {
-    width: calc(745px * $card-display-size);
-    height: calc(1045px * $card-display-size);
+  &--right {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    flex-shrink: 0;
-    &.small {
-      width: calc(745px * $card-small-display-size);
-      height: calc(1045px * $card-small-display-size);
-    }
-    &--shrink {
-      transform: scale($card-display-size);
-      transform-origin: top left;
+    &--card {
+      width: calc(745px * $card-display-size);
+      height: calc(1045px * $card-display-size);
+      flex-shrink: 0;
       &.small {
-        transform: scale($card-small-display-size);
+        width: calc(745px * $card-small-display-size);
+        height: calc(1045px * $card-small-display-size);
+      }
+      &--shrink {
+        transform: scale($card-display-size);
+        transform-origin: top left;
+        &.small {
+          transform: scale($card-small-display-size);
+        }
       }
     }
   }
