@@ -1,0 +1,22 @@
+.App {
+  &--header {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+    &--navigation {
+      display: flex;
+      gap: 5px;
+    }
+    &--settings {
+      position: relative;
+      &--content {
+        position: absolute;
+        right: 0px;
+        width: 160px;
+        display: flex;
+        flex-direction: column;
+        z-index: 1;
+      }
+    }
+  }
+}
