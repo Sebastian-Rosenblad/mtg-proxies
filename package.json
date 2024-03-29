@@ -24,7 +24,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "create-database": "node create-database.js",
-    "create-component": "node create-component.js"
+    "create-component": "node create-component.js",
+    "create-page": "node create-page.js"
   },
   "eslintConfig": {
     "extends": [
