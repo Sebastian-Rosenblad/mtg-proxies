@@ -12,7 +12,7 @@ const className = name.replace(/([a-z])([A-Z])/g, "$1-$2").toLocaleLowerCase();
 const dirPath = path.join(__dirname, 'src', 'Components', name);
 const tsxFilePath = path.join(dirPath, `${componentName}.tsx`);
 const scssFilePath = path.join(dirPath, `${componentName}.scss`);
-const modelFilePath = path.join(__dirname, 'src', 'Models', 'Components');
+const modelFilePath = path.join(__dirname, 'src', 'Models', 'Components', `${className}-props.model.tsx`);
 
 if (!fs.existsSync(dirPath)) {
   fs.mkdirSync(dirPath, { recursive: true });
