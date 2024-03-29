@@ -2,6 +2,8 @@
 
 /public/images/art
 /public/images/sets
+/public/mtg-card-database.json
+/public/mtg-set-database.json
 
 # dependencies
 /node_modules
