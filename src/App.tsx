@@ -21,7 +21,6 @@ function App() {
   function importFromFile() {
     SaveManager.importFromFile().then((importedCards: Array<CardM>) => {
       setCards(importedCards);
-      SaveManager.saveToLocalStorage(importedCards);
     }).catch(error => {
       console.error("Failed to load cards: " + error);
     });
