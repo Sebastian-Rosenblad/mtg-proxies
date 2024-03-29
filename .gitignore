@@ -1,11 +1,5 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-/public/images/art
-/public/images/sets
-/public/images/colors
-/public/mtg-card-database.json
-/public/mtg-set-database.json
-
 # dependencies
 /node_modules
 /.pnp
@@ -27,3 +21,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+public/images/art
+public/images/sets
+public/images/colors
+public/mtg-card-database.json
+public/mtg-set-database.json
