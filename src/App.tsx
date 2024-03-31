@@ -8,6 +8,7 @@ import { CardM } from './Models/card.model';
 import { createNewCard } from './Functions/card.functions';
 import { SaveManager } from './Classes/save-manager.class';
 import { SetM } from './Models/set.model';
+import { PrintP } from './Pages/Print/PrintP';
 
 function App() {
   const [cards, setCards] = useState<Array<CardM>>(SaveManager.loadCardsFromLocalStorage());
@@ -69,10 +70,6 @@ function App() {
     setSets(newSets);
     SaveManager.saveSetsToLocalStorage(newSets);
   }
-
-  function cardsSet(card: CardM): SetM {
-    return sets.find(set => card.set === set.id) || sets[0];
-  }
   
   return (
     <div className="App">
@@ -80,6 +77,7 @@ function App() {
         <nav className="App--header--navigation">
           <Link to='/'><button>Home</button></Link>
           <Link to='/sets/'><button>Sets</button></Link>
+          <Link to='/print/'><button>Print</button></Link>
         </nav>
         <div className="App--header--settings">
           <button onClick={() => setShowSettings(!showSettings)}>Settings</button>
@@ -114,6 +112,9 @@ function App() {
             sets={sets}
             updateSets={updateSets}
           />
+        } />
+        <Route path='/print/' element={
+          <PrintP />
         } />
       </Routes>
     </div>
