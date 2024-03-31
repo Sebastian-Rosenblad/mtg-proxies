@@ -1,1 +1,26 @@
-.print {}
+.print {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 20px;
+  &--printing-cards {
+    display: flex;
+    flex-direction: column;
+    &--card {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+  }
+  &--filters {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+  &--all-cards {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+}

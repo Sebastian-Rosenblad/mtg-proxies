@@ -114,7 +114,10 @@ function App() {
           />
         } />
         <Route path='/print/' element={
-          <PrintP />
+          <PrintP
+            cards={cards}
+            sets={sets}
+          />
         } />
       </Routes>
     </div>

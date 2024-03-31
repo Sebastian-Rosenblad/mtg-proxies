@@ -2,14 +2,12 @@ import React, { useEffect, useState } from "react";
 import './HomeP.scss';
 import { HomePagePropsM } from "../../Models/Pages/home-props.model";
 import { CardLineC } from "../../Components/CardLine/CardLineC";
-import { InputDropDownC } from "../../Components/InputDropDown/InputDropDownC";
-import { CardM } from "../../Models/card.model";
-import { getCardColorIdentity, getCardManaValue, getCardsSet } from "../../Functions/card.functions";
-import { FiltersM } from "../../Models/filters.model";
-import { SaveManager } from "../../Classes/save-manager.class";
-import { InputTextC } from "../../Components/InputText/InputTextC";
 import { CardC } from "../../Components/Card/CardC";
-import { SetM } from "../../Models/set.model";
+import { FilterC } from "../../Components/Filter/FilterC";
+import { CardM } from "../../Models/card.model";
+import { FiltersM } from "../../Models/filters.model";
+import { getCardColorIdentity, getCardManaValue, getCardsSet } from "../../Functions/card.functions";
+import { SaveManager } from "../../Classes/save-manager.class";
 
 export function HomeP(props: HomePagePropsM): JSX.Element {
   const { cards, sets, createCard, editCard, deleteCard } = props;
@@ -70,19 +68,10 @@ export function HomeP(props: HomePagePropsM): JSX.Element {
     <div className="home--header">
       <button onClick={createCard}>Create New Card</button>
       <p>Filter:</p>
-      <InputDropDownC
-        id="home-set-filter"
-        label="Set"
-        undefinable={true}
-        options={sets.map(set => { return { value: set.id, name: set.name }; })}
-        value={filters.set}
-        updateValue={(value: string | undefined) => setFilters({ ...filters, set: value })}
-      />
-      <InputTextC
-        label="Type/Subtype"
-        name="type"
-        value={filters.type || ""}
-        updateValue={(value: string | undefined) => setFilters({ ...filters, type: value === "" ? undefined : value })}
+      <FilterC
+        filters={filters}
+        sets={sets}
+        updateFilters={setFilters}
       />
       <button onClick={() => setCardView(!cardView)}>{cardView ? "List view" : "Card view"}</button>
       {cardView && <button onClick={() => setCardSize(cardSize === "small" ? "large" : "small")}>{cardSize === "small" ? "Large cards" : "Small cards"}</button>}
@@ -98,7 +87,7 @@ export function HomeP(props: HomePagePropsM): JSX.Element {
         )
       )}
       {!cardView && cards.filter(filter).sort(sort).map(card =>
-        <CardLineC key={card.id} card={card} set={getCardsSet(card, sets)} editCard={() => editCard(card)} deleteCard={deleteCard ? () => deleteCard(card) : undefined} />
+        <CardLineC key={card.id} card={card} set={getCardsSet(card, sets)} selectCard={() => editCard(card)} deleteCard={deleteCard ? () => deleteCard(card) : undefined} />
       )}
     </div>
   </div>;

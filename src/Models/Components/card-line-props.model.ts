@@ -4,6 +4,7 @@ import { SetM } from "../set.model";
 export interface CardLinePropsM {
   card: CardM;
   set: SetM;
-  editCard: () => void;
+  illustration?: number;
+  selectCard?: () => void;
   deleteCard?: () => void;
 }

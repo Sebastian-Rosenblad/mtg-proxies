@@ -51,6 +51,10 @@
   &--set {
     width: 160px;
   }
+  &--illustration {
+    width: 200px;
+    font-size: .75rem!important;
+  }
   &:hover {
     background-color: #eee;
   }
