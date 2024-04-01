@@ -11,7 +11,7 @@ import { InputTextC } from "../../Components/InputText/InputTextC";
 
 interface PrintCardM {
   card: CardM;
-  amount: Array<number>;
+  amount: Array<string>;
 }
 
 export function PrintP(props: PrintPropsM): JSX.Element {
@@ -29,18 +29,26 @@ export function PrintP(props: PrintPropsM): JSX.Element {
   function addToPrint(card: CardM) {
     setPrintingData([...printingData, { card: card, amount: new Array(card.illustrations.length).fill(0) }]);
   }
-  function changeAmount(item: PrintCardM, index: number, value: string) {
-
+  function changeAmount(id: string, index: number, value: string) {
+    setPrintingData(printingData.map(item => item.card.id === id ? { ...item, amount: item.amount.map((v, i) => i === index ? value : v) } : item))
   }
   function removeFromPrint(card: CardM) {
     setPrintingData(printingData.filter(item => item.card.id !== card.id));
   }
+  function startPrinting() {}
+
+  const numberOfSelectedCards = (): number => printingData.map(item => item.amount.reduce((a, b) => a + parseInt(b), 0)).reduce((a, b) => a + b, 0);
 
   return <div className="print">
+    <div className="print--information">
+      <p>{Math.ceil(numberOfSelectedCards() / 9)} pages</p>
+      <p>{numberOfSelectedCards() % 9 === 0 ? 0 : 9 - numberOfSelectedCards() % 9} open slots</p>
+      <button onClick={startPrinting}>Print selection</button>
+    </div>
     <div className="print--printing-cards">
-      {printingData.map(item => item.amount.map((amount, i) => <div key={item.card.id} className="print--printing-cards--card">
+      {printingData.map(item => item.amount.map((amount, i) => <div key={item.card.id + "-" + i} className="print--printing-cards--card">
         <CardLineC card={item.card} set={getCardsSet(item.card, sets)} selectCard={() => removeFromPrint(item.card)} illustration={i} />
-        <InputTextC label="Amount" name="amount" value={amount.toString()} updateValue={(value) => changeAmount(item, i, value)} />
+        <InputTextC label="Amount" name="amount" value={amount.toString()} updateValue={(value) => changeAmount(item.card.id, i, value)} />
       </div>))}
     </div>
     <div className="print--filters">
