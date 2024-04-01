@@ -57,7 +57,7 @@ export function EditP(props: EditPagePropsM): JSX.Element {
     { type: "text-array", label: "Illustrations", key: "illustrations", singular: "illustration" },
     { type: "text", label: "Type", key: "type" },
     { type: "text", label: "Subtype", key: "subtype" },
-    { type: "text", label: "Rarity", key: "rarity" },
+    { type: "drop-down", label: "Rarity", key: "rarity", options: [{ value: "Common", name: "Common" }, { value: "Uncommon", name: "Uncommon" }, { value: "Rare", name: "Rare" }, { value: "Mythic", name: "Mythic rare" }] },
     { type: "drop-down", label: "Set", key: "set", options: sets.map(set => { return { value: set.id, name: set.name }; }) },
     { type: "textarea-array", label: "Abilities", key: "text", singular: "ability" },
     { type: "textarea", label: "Flavor text", key: "flavorText" },
