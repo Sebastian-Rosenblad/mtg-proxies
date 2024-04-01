@@ -78,8 +78,8 @@ export function HomeP(props: HomePagePropsM): JSX.Element {
     </div>
     <div className={cardView ? "home--cards" : "home--list"}>
       {cardView && cards.filter(filter).sort(sort).map(card =>
-        card.illustrations.map((illustration, i) =>
-          <div key={card.id + "-" + illustration} className={["home--cards--card", cardSize].join(" ")} onClick={() => editCard(card)}>
+        card.illustrations.map((_, i) =>
+          <div key={card.id + "-" + i} className={["home--cards--card", cardSize].join(" ")} onClick={() => editCard(card)}>
             <div className={["home--cards--card--shrink", cardSize].join(" ")}>
               <CardC card={card} set={getCardsSet(card, sets)} illustration={i} />
             </div>
