@@ -1,1 +1,16 @@
-.printing {}
+.printing {
+  position: absolute;
+  top: 0px;
+  width: 2480px;
+  height: 3508px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url("../../../public/images/print-background.png");
+  &--cards {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}

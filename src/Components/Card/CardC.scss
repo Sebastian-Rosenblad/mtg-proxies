@@ -30,6 +30,12 @@ $card-border-width: calc(($card-width - $card-content-width) / 2);
   border-radius: calc(5 * $card-border-width / 6);
   box-shadow: 1px 1px 10px #aaa;
   overflow: hidden;
+  &.for-print {
+    width: calc($card-width + 20px);
+    height: calc($card-height + 20px);
+    border-radius: 0px;
+    box-shadow: none;
+  }
   &.printing {
     border-radius: unset;
   }

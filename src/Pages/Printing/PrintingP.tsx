@@ -42,13 +42,16 @@ export function PrintingP(props: PrintingPropsM): JSX.Element {
   }, [totalPages]);
 
   return <div className="printing">
-    {items.slice(page * 9, (page + 1) * 9).map((item, i) =>
-      <CardC
-        key={item.card.id + "-" + item.illustration + "-" + i}
-        card={item.card}
-        set={getCardsSet(item.card, sets)}
-        illustration={item.illustration}
-      />
-    )}
+    <div className="printing--cards">
+      {items.slice(page * 9, (page + 1) * 9).map((item, i) =>
+        <CardC
+          key={item.card.id + "-" + item.illustration + "-" + i}
+          card={item.card}
+          set={getCardsSet(item.card, sets)}
+          illustration={item.illustration}
+          forPrint
+        />
+      )}
+    </div>
   </div>;
 }

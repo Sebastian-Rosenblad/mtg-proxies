@@ -4,7 +4,7 @@ import { CardComponentPropsM } from "../../Models/Components/card-props.model";
 import { getCardColor, getCardStats, getColorName } from "../../Functions/card.functions";
 
 export function CardC(props: CardComponentPropsM): JSX.Element {
-  const { card, set, illustration, updateIllustration } = props;
+  const { card, set, illustration, updateIllustration, forPrint } = props;
 
   function cycleVariation() {
     if (updateIllustration && illustration !== undefined) updateIllustration((illustration + 1) % card.illustrations.length);
@@ -16,6 +16,8 @@ export function CardC(props: CardComponentPropsM): JSX.Element {
       c.push("has-text");
     if (getCardStats(card) !== "")
       c.push("has-stats");
+    if (forPrint)
+      c.push("for-print");
     c.push((card.border || "black") + "-border");
     return c.join(" ");
   };

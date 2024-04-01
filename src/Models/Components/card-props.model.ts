@@ -6,4 +6,5 @@ export interface CardComponentPropsM {
   set: SetM;
   illustration?: number;
   updateIllustration?: (newIllustration: number) => void;
+  forPrint?: boolean;
 }
