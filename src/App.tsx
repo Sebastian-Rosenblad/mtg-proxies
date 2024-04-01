@@ -9,11 +9,14 @@ import { createNewCard } from './Functions/card.functions';
 import { SaveManager } from './Classes/save-manager.class';
 import { SetM } from './Models/set.model';
 import { PrintP } from './Pages/Print/PrintP';
+import { PrintDataM } from './Models/print-data.model';
+import { PrintingP } from './Pages/Printing/PrintingP';
 
 function App() {
   const [cards, setCards] = useState<Array<CardM>>(SaveManager.loadCardsFromLocalStorage());
   const [sets, setSets] = useState<Array<SetM>>(SaveManager.loadSetsFromLocalStorage());
   const [editCard, setEditCard] = useState<CardM | undefined>(undefined);
+  const [printData, setPrintData] = useState<Array<PrintDataM>>([]);
   const [showSettings, setShowSettings] = useState<boolean>(false);
   let navigate: NavigateFunction = useNavigate();
 
@@ -21,6 +24,11 @@ function App() {
     if (editCard !== undefined) navigate('/edit/');
     else navigate('/');
   }, [editCard]);
+  
+  useEffect(() => {
+    if (printData.length > 0) navigate('/printing/');
+    else navigate('/');
+  }, [printData]);
 
   function importCardsFromFile() {
     SaveManager.importCardsFromFile().then((importedCards: Array<CardM>) => {
@@ -116,6 +124,13 @@ function App() {
         <Route path='/print/' element={
           <PrintP
             cards={cards}
+            sets={sets}
+            print={setPrintData}
+          />
+        } />
+        <Route path='/printing/' element={
+          <PrintingP
+            printData={printData}
             sets={sets}
           />
         } />

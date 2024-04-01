@@ -8,36 +8,38 @@ import { FilterC } from "../../Components/Filter/FilterC";
 import { CardLineC } from "../../Components/CardLine/CardLineC";
 import { getCardsSet } from "../../Functions/card.functions";
 import { InputTextC } from "../../Components/InputText/InputTextC";
-
-interface PrintCardM {
-  card: CardM;
-  amount: Array<string>;
-}
+import { PrintDataM } from "../../Models/print-data.model";
 
 export function PrintP(props: PrintPropsM): JSX.Element {
-  const { cards, sets } = props;
-  const [printingData, setPrintingData] = useState<Array<PrintCardM>>([]);
+  const { cards, sets, print } = props;
+  const [printData, setPrintData] = useState<Array<PrintDataM>>([]);
   const [filters, setFilters] = useState<FiltersM>(SaveManager.loadFilters());
 
   function filter(card: CardM): boolean {
-    if (printingData.find(item => item.card.id === card.id)) return false;
+    if (printData.find(item => item.card.id === card.id)) return false;
     if (filters.set !== undefined && card.set !== filters.set) return false;
     if (filters.type !== undefined && !(card.type.toLocaleLowerCase().includes(filters.type.toLocaleLowerCase()) || card.subtype?.toLocaleLowerCase().includes(filters.type.toLocaleLowerCase()))) return false;
     return true;
   }
 
   function addToPrint(card: CardM) {
-    setPrintingData([...printingData, { card: card, amount: new Array(card.illustrations.length).fill(0) }]);
+    setPrintData([...printData, { card: card, amount: new Array(card.illustrations.length).fill(0) }]);
   }
   function changeAmount(id: string, index: number, value: string) {
-    setPrintingData(printingData.map(item => item.card.id === id ? { ...item, amount: item.amount.map((v, i) => i === index ? value : v) } : item))
+    let n: number = value === "" || isNaN(parseInt(value)) ? -1 : parseInt(value);
+    setPrintData(printData.map(item => item.card.id === id ? { ...item, amount: item.amount.map((v, i) => i === index ? n : v) } : item))
   }
   function removeFromPrint(card: CardM) {
-    setPrintingData(printingData.filter(item => item.card.id !== card.id));
+    setPrintData(printData.filter(item => item.card.id !== card.id));
   }
-  function startPrinting() {}
+  function startPrinting() {
+    const toPrint: Array<PrintDataM> = printData
+      .map(item => { return { ...item, amount: item.amount.map(value => value < 0 ? 0 : value) }; })
+      .filter(item => item.amount.reduce((a, b) => a + b, 0) > 0);
+    print(toPrint);
+  }
 
-  const numberOfSelectedCards = (): number => printingData.map(item => item.amount.reduce((a, b) => a + parseInt(b), 0)).reduce((a, b) => a + b, 0);
+  const numberOfSelectedCards = (): number => printData.map(item => item.amount.filter(n => n > 0).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
 
   return <div className="print">
     <div className="print--information">
@@ -46,9 +48,9 @@ export function PrintP(props: PrintPropsM): JSX.Element {
       <button onClick={startPrinting}>Print selection</button>
     </div>
     <div className="print--printing-cards">
-      {printingData.map(item => item.amount.map((amount, i) => <div key={item.card.id + "-" + i} className="print--printing-cards--card">
+      {printData.map(item => item.amount.map((amount, i) => <div key={item.card.id + "-" + i} className="print--printing-cards--card">
         <CardLineC card={item.card} set={getCardsSet(item.card, sets)} selectCard={() => removeFromPrint(item.card)} illustration={i} />
-        <InputTextC label="Amount" name="amount" value={amount.toString()} updateValue={(value) => changeAmount(item.card.id, i, value)} />
+        <InputTextC label="Amount" name="amount" value={amount < 0 ? "" : amount.toString()} updateValue={(value) => changeAmount(item.card.id, i, value)} />
       </div>))}
     </div>
     <div className="print--filters">
