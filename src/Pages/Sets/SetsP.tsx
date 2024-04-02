@@ -34,6 +34,12 @@ export function SetsP(props: SetsPropsM): JSX.Element {
           value={set.icon}
           updateValue={(value: string) => handleChange(i, "icon", value)}
         />
+        <div className="sets--content--set--icons">
+          <img className="sets--content--set--icons--icon" src={"/images/sets/" + set.icon + "-common.png"} />
+          <img className="sets--content--set--icons--icon" src={"/images/sets/" + set.icon + "-uncommon.png"} />
+          <img className="sets--content--set--icons--icon" src={"/images/sets/" + set.icon + "-rare.png"} />
+          <img className="sets--content--set--icons--icon" src={"/images/sets/" + set.icon + "-mythic.png"} />
+        </div>
       </div>)}
     </div>
   </div>;
