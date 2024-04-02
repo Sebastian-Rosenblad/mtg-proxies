@@ -26,7 +26,7 @@ export function getCardColorIdentity(card: CardM): Array<string> {
   if (colors.size > 1 && colors.has("colorless")) colors.delete("colorless");
   return Array.from(colors);
 }
-const colorKeys: { [key: string]: { land: string; icons: Array<string>; }; } = {
+export const colorKeys: { [key: string]: { land: string; icons: Array<string>; }; } = {
   white: { land: "Plains", icons: ["{W}", "{GW}", "{RW}", "{WB}", "{WU}", "{WP}"] },
   blue: { land: "Island", icons: ["{U}", "{GU}", "{WU}", "{UR}", "{UB}", "{UP}"] },
   black: { land: "Swamp", icons: ["{B}", "{BG}", "{WB}", "{BR}", "{UB}", "{BP}"] },

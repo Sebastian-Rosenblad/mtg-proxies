@@ -1,0 +1,49 @@
+.chat-gpt {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 20px;
+  &--inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    &--columns {
+      display: flex;
+      justify-content: center;
+      flex-direction: unset;
+      flex-wrap: wrap;
+      gap: 10px;
+      &--item {
+        width: 45%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 5px 10px;
+        border: 1px solid;
+        border-radius: 10px;
+        box-sizing: border-box;
+      }
+    }
+    &--buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    &--item {
+      display: flex;
+      gap: 10px;
+      &--card {
+        width: calc(745px * 0.5);
+        height: calc(1045px * 0.5);
+        flex-shrink: 0;
+        &--shrink {
+          transform: scale(0.5);
+          transform-origin: top left;
+        }
+      }
+      .input-drop-down {
+        width: 100%;
+      }
+    }
+  }
+}

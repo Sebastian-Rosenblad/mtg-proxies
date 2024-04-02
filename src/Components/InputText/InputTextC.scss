@@ -9,4 +9,14 @@
   input {
     width: 100%;
   }
+  &.description {
+    align-items: unset;
+    flex-direction: column;
+    gap: 5px;
+  }
+  &--input-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 }

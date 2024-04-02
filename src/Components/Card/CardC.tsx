@@ -4,7 +4,7 @@ import { CardComponentPropsM } from "../../Models/Components/card-props.model";
 import { getCardColor, getCardStats, getColorName } from "../../Functions/card.functions";
 
 export function CardC(props: CardComponentPropsM): JSX.Element {
-  const { card, set, illustration, updateIllustration, forPrint } = props;
+  const { card, set, illustration, updateIllustration, forPrint, usingRef } = props;
 
   function cycleVariation() {
     if (updateIllustration && illustration !== undefined) updateIllustration((illustration + 1) % card.illustrations.length);
@@ -96,6 +96,7 @@ export function CardC(props: CardComponentPropsM): JSX.Element {
         className="card--art"
         style={{backgroundImage: 'url("/images/art/' + card.illustrations[props.illustration || 0] + '.png")'}}
         onClick={cycleVariation}
+        ref={usingRef}
       ></div>
       <div className="card--body">
         <div className={getTitleClasses()}>

@@ -7,4 +7,5 @@ export interface CardComponentPropsM {
   illustration?: number;
   updateIllustration?: (newIllustration: number) => void;
   forPrint?: boolean;
+  usingRef?: (node: HTMLImageElement) => void;
 }
