@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import './EditP.scss';
 import { EditPagePropsM } from "../../Models/Pages/edit-props.model";
 import { CardC } from "../../Components/Card/CardC";
@@ -9,6 +9,8 @@ import { InputTextareaArrayC } from "../../Components/InputTextareaArray/InputTe
 import { CardM } from "../../Models/card.model";
 import { InputDropDownC } from "../../Components/InputDropDown/InputDropDownC";
 import { getCardsSet } from "../../Functions/card.functions";
+import { SaveManager } from "../../Classes/save-manager.class";
+import { SettingsM } from "../../Models/settings.model";
 
 interface FieldM {
   type: "text" | "textarea" | "text-array" | "textarea-array" | "drop-down";
@@ -24,7 +26,11 @@ export function EditP(props: EditPagePropsM): JSX.Element {
   const [isChanged, setIsChanged] = useState<boolean>(false);
   const [illustration, setIllustration] = useState<number>(0);
   const [deleteConfirmation, setDeleteConfirmation] = useState<number>(0);
-  const [cardSize, setCardSize] = useState<"small" | "large">("small");
+  const [settings, setSettings] = useState<SettingsM>(SaveManager.loadSettings());
+
+  useEffect(() => {
+    SaveManager.saveSettings(settings);
+  }, [settings]);
 
   function handleDeleteClick() {
     if (!deleteConfirmation) setDeleteConfirmation(Date.now());
@@ -123,12 +129,12 @@ export function EditP(props: EditPagePropsM): JSX.Element {
       </div>
     </div>
     <div className="edit--right">
-      <div className={["edit--right--card", cardSize].join(" ")}>
-        <div className={["edit--right--card--shrink", cardSize].join(" ")}>
+      <div className={["edit--right--card", settings.editSize].join(" ")}>
+        <div className={["edit--right--card--shrink", settings.editSize].join(" ")}>
           <CardC card={editingCard} set={getCardsSet(editingCard, sets)} illustration={illustration} updateIllustration={setIllustration} />
         </div>
       </div>
-      <button onClick={() => setCardSize(cardSize === "small" ? "large" : "small")}>{cardSize === "small" ? "Large card" : "Small card"}</button>
+      <button onClick={() => setSettings({ ...settings, editSize: settings.editSize === "small" ? "large" : "small" })}>{settings.editSize === "small" ? "Large card" : "Small card"}</button>
     </div>
   </div>;
 }

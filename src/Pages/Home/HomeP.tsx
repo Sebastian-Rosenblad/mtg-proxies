@@ -8,16 +8,19 @@ import { CardM } from "../../Models/card.model";
 import { FiltersM } from "../../Models/filters.model";
 import { getCardColorIdentity, getCardManaValue, getCardsSet } from "../../Functions/card.functions";
 import { SaveManager } from "../../Classes/save-manager.class";
+import { SettingsM } from "../../Models/settings.model";
 
 export function HomeP(props: HomePagePropsM): JSX.Element {
   const { cards, sets, createCard, editCard, deleteCard } = props;
   const [filters, setFilters] = useState<FiltersM>(SaveManager.loadFilters());
-  const [cardView, setCardView] = useState<boolean>(false);
-  const [cardSize, setCardSize] = useState<"small" | "large">("small");
+  const [settings, setSettings] = useState<SettingsM>(SaveManager.loadSettings());
 
   useEffect(() => {
     SaveManager.saveFilters(filters);
   }, [filters]);
+  useEffect(() => {
+    SaveManager.saveSettings(settings);
+  }, [settings]);
 
   function filter(card: CardM): boolean {
     if (filters.set !== undefined && card.set !== filters.set) return false;
@@ -73,20 +76,20 @@ export function HomeP(props: HomePagePropsM): JSX.Element {
         sets={sets}
         updateFilters={setFilters}
       />
-      <button onClick={() => setCardView(!cardView)}>{cardView ? "List view" : "Card view"}</button>
-      {cardView && <button onClick={() => setCardSize(cardSize === "small" ? "large" : "small")}>{cardSize === "small" ? "Large cards" : "Small cards"}</button>}
+      <button onClick={() => setSettings({ ...settings, cardView: !settings.cardView })}>{settings.cardView ? "List view" : "Card view"}</button>
+      {settings.cardView && <button onClick={() => setSettings({ ...settings, homeSize: settings.homeSize === "small" ? "large" : "small" })}>{settings.homeSize === "small" ? "Large cards" : "Small cards"}</button>}
     </div>
-    <div className={cardView ? "home--cards" : "home--list"}>
-      {cardView && cards.filter(filter).sort(sort).map(card =>
+    <div className={settings.cardView ? "home--cards" : "home--list"}>
+      {settings.cardView && cards.filter(filter).sort(sort).map(card =>
         card.illustrations.map((_, i) =>
-          <div key={card.id + "-" + i} className={["home--cards--card", cardSize].join(" ")} onClick={() => editCard(card)}>
-            <div className={["home--cards--card--shrink", cardSize].join(" ")}>
+          <div key={card.id + "-" + i} className={["home--cards--card", settings.homeSize].join(" ")} onClick={() => editCard(card)}>
+            <div className={["home--cards--card--shrink", settings.homeSize].join(" ")}>
               <CardC card={card} set={getCardsSet(card, sets)} illustration={i} />
             </div>
           </div>
         )
       )}
-      {!cardView && cards.filter(filter).sort(sort).map(card =>
+      {!settings.cardView && cards.filter(filter).sort(sort).map(card =>
         <CardLineC key={card.id} card={card} set={getCardsSet(card, sets)} selectCard={() => editCard(card)} deleteCard={deleteCard ? () => deleteCard(card) : undefined} />
       )}
     </div>

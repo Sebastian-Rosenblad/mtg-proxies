@@ -1,11 +1,13 @@
 import { CardM } from "../Models/card.model";
 import { FiltersM } from "../Models/filters.model";
 import { SetM } from "../Models/set.model";
+import { SettingsM } from "../Models/settings.model";
 
 export class SaveManager {
   protected static KEY_CARDS: string = "ancinysMTG-cards";
   protected static KEY_SETS: string = "ancinysMTG-sets";
   protected static KEY_FILTERS: string = "ancinysMTG-filters";
+  protected static KEY_SETTINGS: string = "ancinysMTG-settings";
   protected static CARD_DATABASE: string = "mtg-card-database";
   protected static SET_DATABASE: string = "mtg-set-database";
 
@@ -69,5 +71,14 @@ export class SaveManager {
     const loadString: string | null = localStorage.getItem(this.KEY_FILTERS);
     if (loadString !== null) return JSON.parse(loadString);
     return {} as FiltersM;
+  }
+
+  static saveSettings(settings: SettingsM) {
+    localStorage.setItem(this.KEY_SETTINGS, JSON.stringify(settings));
+  }
+  static loadSettings(): SettingsM {
+    const loadString: string | null = localStorage.getItem(this.KEY_SETTINGS);
+    if (loadString !== null) return JSON.parse(loadString);
+    return {} as SettingsM;
   }
 }
