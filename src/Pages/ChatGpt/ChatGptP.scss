@@ -3,10 +3,24 @@
   flex-direction: column;
   gap: 10px;
   padding: 10px 20px;
-  &--inputs {
+  &--step {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    &--buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    &--response {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 10px;
+      background-color: #f5f8fa;
+      border: 1px solid;
+      border-radius: 10px;
+    }
     &--columns {
       display: flex;
       justify-content: center;
@@ -24,13 +38,9 @@
         box-sizing: border-box;
       }
     }
-    &--buttons {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-    }
     &--item {
       display: flex;
+      justify-content: center;
       gap: 10px;
       &--card {
         width: calc(745px * 0.5);
@@ -43,6 +53,18 @@
       }
       .input-drop-down {
         width: 100%;
+      }
+    }
+    &--flavor {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      &--item {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        gap: 5px;
       }
     }
   }

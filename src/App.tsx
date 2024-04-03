@@ -143,6 +143,7 @@ function App() {
             <button onClick={exportCardsToFile}>Save cards to file</button>
             <button onClick={importSetsFromFile}>Load sets from file</button>
             <button onClick={exportSetsToFile}>Save sets to file</button>
+            <button onClick={() => SaveManager.clearChatGptData()}>Clear ChatGPT data</button>
           </div>}
         </div>
       </div>

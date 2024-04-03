@@ -91,7 +91,7 @@ export class SaveManager {
   static loadChatGptSettings(): GptSettingsM {
     const loadString: string | null = localStorage.getItem(this.KEY_AI_SETTINGS);
     if (loadString !== null) return JSON.parse(loadString);
-    return {} as GptSettingsM;
+    return { color: "White", theme: "", inspiration: "", mechanics: "" };
   }
   static saveChatGptCards(cards: Array<AiCardM>) {
     localStorage.setItem(this.KEY_AI_CARDS, JSON.stringify(cards));
