@@ -15,6 +15,9 @@ export function SetsP(props: SetsPropsM): JSX.Element {
     let newSets: Array<SetM> = sets.map((set, i) => i === index ? { ...set, [key]: value } : set);
     updateSets(newSets);
   }
+  function handleRemove(id: string) {
+    updateSets(sets.filter(set => set.id !== id));
+  }
 
   return <div className="sets">
     <div className="sets--header">
@@ -40,6 +43,7 @@ export function SetsP(props: SetsPropsM): JSX.Element {
           <img className="sets--content--set--icons--icon" src={"/images/sets/" + set.icon + "-rare.png"} />
           <img className="sets--content--set--icons--icon" src={"/images/sets/" + set.icon + "-mythic.png"} />
         </div>
+        <button onClick={() => handleRemove(set.id)}>Remove</button>
       </div>)}
     </div>
   </div>;
