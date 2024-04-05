@@ -23,18 +23,16 @@ function App() {
   let navigate: NavigateFunction = useNavigate();
 
   useEffect(() => {
-    if (SaveManager.loadChatGptCards().length > 0) navigate('/chatgpt/');
-  }, []);
-
-  useEffect(() => {
     if (editCard !== undefined) navigate('/edit/');
     else navigate('/');
   }, [editCard]);
-  
   useEffect(() => {
     if (printData.length > 0) navigate('/printing/');
     else navigate('/');
   }, [printData]);
+  useEffect(() => {
+    if (SaveManager.loadChatGptCards().length > 0) navigate('/chatgpt/');
+  }, []);
 
   function importCardsFromFile() {
     SaveManager.importCardsFromFile().then((importedCards: Array<CardM>) => {

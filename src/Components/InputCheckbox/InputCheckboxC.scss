@@ -1,0 +1,17 @@
+.input-checkbox {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  &--input-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    label {
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    input {
+      width: 100%;
+    }
+  }
+}

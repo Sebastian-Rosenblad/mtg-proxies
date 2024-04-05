@@ -7,12 +7,15 @@ import { CardM } from "../../Models/card.model";
 import { CardC } from "../../Components/Card/CardC";
 import { SaveManager } from "../../Classes/save-manager.class";
 import { SetM } from "../../Models/set.model";
+import { InputCheckboxC } from "../../Components/InputCheckbox/InputCheckboxC";
 
 export interface GptSettingsM {
   color: "White" | "Blue" | "Black" | "Red" | "Green";
   theme: string;
   inspiration: string;
   mechanics: string;
+  snowCovered: boolean;
+  cardIndex: number;
 }
 interface InspirationResponseM {
   name: string;
@@ -61,7 +64,7 @@ export function ChatGptP(props: ChatGptPropsM): JSX.Element {
   const [step, setStep] = useState<number>(0);
   const [inspiration, setInspiration] = useState<Array<InspirationM>>([]);
   const [aiCards, setAiCards] = useState<Array<AiCardM>>(SaveManager.loadChatGptCards());
-  const [cardIndex, setCardIndex] = useState<number>(0);
+  const [cardIndex, setCardIndex] = useState<number>(settings.cardIndex);
   const [response, setResponse] = useState<string>("");
   const [dimensions, setDimensions] = useState<string>("1:1");
   const { addCards } = props;
@@ -69,6 +72,9 @@ export function ChatGptP(props: ChatGptPropsM): JSX.Element {
   useEffect(() => {
     if (step === 0 && aiCards.length > 0) setStep(70);
   }, [aiCards]);
+  useEffect(() => {
+    SaveManager.saveChatGptSettings({ ...settings, cardIndex: cardIndex });
+  }, [cardIndex]);
 
   function copyStepOne() {
     const iss: number = Math.floor(Math.pow(Math.random() - 1, 2) * 3.5 + 2.5);
@@ -106,14 +112,15 @@ interface InspirationM {
     }
   }
   function copyStepTwo() {
-    const clip: string = `Those are some great cards! I have some comments on these specific cards:
+    const clip: string = `Those are some great cards! I have some comments though:
 
-${inspiration.filter(item => item.comment.length > 0).map(item => item.name + ": " + item.comment).join(`
+${inspiration.map(item => item.name + ": " + (item.comment.length > 0 ? item.comment : "Unchanged")).join(`
+
 `)}
 
 If you change the card type from a comment, please update the name of the card so that it better fit the new type.
 
-Could you update the JSON block from these comments? Keep any cards not mentioned here unchanged but still in the JSON block as well. Thanks a lot!`;
+Could you update the JSON block from these comments? Thanks a lot!`;
     navigator.clipboard.writeText(clip).then(() => setStep(11));
   }
   function copyStepThree() {
@@ -150,6 +157,7 @@ interface CardM {
       const value: Array<any> = JSON.parse(response);
       setAiCards([ ...aiCards, ...value.map(item => ({
         ...item,
+        manaValue: item.type === "Land" ? "" : item.manaValue,
         prompt: "",
         imgPath: nameToCamelCase(settings.theme) + "-" + nameToCamelCase(item.name)
       } as AiCardM))]);
@@ -216,13 +224,13 @@ interface FlavorTextM {
 
 ${aiCards.map(card => card.name).join(`
 `)}
-${landNames[settings.color].thrive}
-${landNames[settings.color].basic} 1
-${landNames[settings.color].basic} 2
-${landNames[settings.color].basic} 3
+${landNames[settings.color].thrive}: This land represents each different basic land type, so take inspiration from most or all of: Plains, Island, Swamp, Mountain, and Forest. But take the most inspiration from the ${landNames[settings.color].basic.split(" ")[1]}
+${settings.snowCovered ? "Snow-Covered " : "Basic " + landNames[settings.color].basic.split(" ")[1]} 1
+${settings.snowCovered ? "Snow-Covered " : "Basic " + landNames[settings.color].basic.split(" ")[1]} 2
+${settings.snowCovered ? "Snow-Covered " : "Basic " + landNames[settings.color].basic.split(" ")[1]} 3
 
 interface PromptM {
-  name: string;// "${landNames[settings.color].basic} 1", "${landNames[settings.color].basic} 2" for the basic lands
+  name: string;
   prompt: string;
 }
 
@@ -250,9 +258,9 @@ Please include the overall theme and inspiration of the pack in the basic land p
         imgPath: nameToCamelCase(settings.theme) + "-" + nameToCamelCase(landNames[settings.color].thrive)
       });
       values.slice(-3).forEach((value, i) => newCards.push({
-        name: landNames[settings.color].basic,
+        name: settings.snowCovered ? "Snow-Covered " : "Basic " + landNames[settings.color].basic.split(" ")[1],
         manaValue: "",
-        type: "Basic Land",
+        type: settings.snowCovered ? "Basic Snow Land" : "Basic Land",
         subtype: landNames[settings.color].basic.split(" ")[1],
         rarity: "Common",
         text: [],
@@ -269,7 +277,7 @@ Please include the overall theme and inspiration of the pack in the basic land p
     }
   }
   function copyPrompt() {
-    const clip: string = aiCards[cardIndex].prompt + ", magic the gathering art --ar " + dimensions;
+    const clip: string = aiCards[cardIndex].name.toLocaleLowerCase() + ", " + aiCards[cardIndex].prompt + ", magic the gathering art --ar " + dimensions;
     navigator.clipboard.writeText(clip);
   }
   function copyPath() {
@@ -329,20 +337,20 @@ Please include the overall theme and inspiration of the pack in the basic land p
       />
       <InputTextC
         label="Inspiration"
-        desc="Anything the cards should be inspired by, like: Harry Potter, Trees, or Programming (use 1-3 things)"
+        desc="Anything the cards should be inspired by (1 word to a few sentences)."
         name="inspiration"
         value={settings.inspiration}
         updateValue={(value: string) => setSettings({ ...settings, inspiration: value })}
       />
       <InputTextC
         label="Mechanics"
-        desc="Keywords or mechanics that should be extra prelevant in this pack, like: Healing, Burn, Trample, or Sacrifice (use 1-3 things)"
+        desc="Keywords or mechanics that should be extra prelevant in this pack, like: Healing, Burn, Trample, or Sacrifice."
         name="mechanics"
         value={settings.mechanics}
         updateValue={(value: string) => setSettings({ ...settings, mechanics: value })}
       />
       <div className="chat-gpt--step--buttons">
-        <button onClick={copyStepOne}>{step === 0 ? "Generate Jumpstart Pack!" : "Copy prompt"}</button>
+        <button onClick={copyStepOne}>{step === 0 ? "Generate Jumpstart Pack!" : "Copy prompt again"}</button>
       </div>
       {step > 0 && <div className="chat-gpt--step--response">
         <p>Text has been copied to your clipboard. Paste it into a <b>new</b> ChatGPT chat and then paste the contents of the generated code block below <i>(press "Copy code" in the top right on the code block)</i>:</p>
@@ -366,7 +374,7 @@ Please include the overall theme and inspiration of the pack in the basic land p
         </div>)}
       </div>
       <div className="chat-gpt--step--buttons">
-        <button onClick={copyStepTwo}>{step === 10 ? "Comment on cards" : "Copy prompt"}</button>
+        <button onClick={copyStepTwo}>{step === 10 ? "Copy comments" : "Copy prompt again"}</button>
         <button onClick={() => setStep(20)}>Skip to next step</button>
       </div>
       {step > 10 && <div className="chat-gpt--step--response">
@@ -431,7 +439,7 @@ Please include the overall theme and inspiration of the pack in the basic land p
         </div>)}
       </div>
       <div className="chat-gpt--step--buttons">
-        <button onClick={copyStepSix}>{step === 50 ? "Set flavor" : "Copy prompt"}</button>
+        <button onClick={copyStepSix}>{step === 50 ? "Copy flavor" : "Copy prompt again"}</button>
       </div>
       {step > 50 && <div className="chat-gpt--step--response">
         <p>The flavor has been copied to your clipboard. Paste it into the existing ChatGPT chat and then paste the contents of the generated code block below:</p>
@@ -442,6 +450,13 @@ Please include the overall theme and inspiration of the pack in the basic land p
     {(step >= 60 && step < 70) && <div className="chat-gpt--step">
       <h3>Step 6: Prompts for your prompts</h3>
       <p>This step still doesn't have any settings, instead just press the button below.</p>
+      <InputCheckboxC
+        label="Snow-covered basics?"
+        desc="Do you want to replace all basic lands with their snow-covered counter parts?"
+        name="snow-covered"
+        value={settings.snowCovered}
+        updateValue={(value: boolean) => setSettings({ ...settings, snowCovered: value })}
+      />
       <div className="chat-gpt--step--buttons">
         <button onClick={copyStepSeven}>Copy prompt</button>
       </div>
@@ -459,6 +474,7 @@ Please include the overall theme and inspiration of the pack in the basic land p
         {cardIndex < aiCards.length - 1 && <button onClick={() => setCardIndex(cardIndex + 1)}>Next card</button>}
         {cardIndex === aiCards.length - 1 && <button onClick={finalize}>Finalize</button>}
       </div>
+      <p>{aiCards[cardIndex].prompt}</p>
       <div className="chat-gpt--step--item">
         <CardC card={aiToCard(aiCards[cardIndex], 0)} set={set} usingRef={updateDimensions} />
       </div>
