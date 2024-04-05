@@ -28,7 +28,7 @@ export function CardLineC(props: CardLinePropsM): JSX.Element {
     <div className="card-line--rarity"><div className={["card-line--rarity--icon", card.rarity.toLocaleLowerCase()].join(" ")}></div></div>
     <p className="card-line--name">{card.name}</p>
     <p className="card-line--type">{card.type}</p>
-    <p className="card-line--set">{set.name}</p>
+    <p className="card-line--set">{set && set.name}</p>
     {illustration !== undefined && <p className="card-line--illustration">{card.illustrations[illustration]}</p>}
     {deleteCard && <button onClick={deleteCard}>delete</button>}
   </div>;
