@@ -11,13 +11,13 @@ export function InputCheckboxC(props: InputCheckboxPropsM): JSX.Element {
 
   return <div className={["input-checkbox", desc !== undefined ? desc : ""].join(" ")}>
     <div className="input-checkbox--input-area">
-      <label>{label}</label>
       <input
         type="checkbox"
         name={name}
         checked={value}
         onChange={handleChange}
       ></input>
+      <label>{label}</label>
     </div>
     {desc !== undefined && desc !== "" && <p><i>{desc}</i></p>}
   </div>
