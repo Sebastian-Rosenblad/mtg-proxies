@@ -5,9 +5,9 @@ let thread: OpenAI.Beta.Threads.Thread | null = null;
 
 function getAssistant(model: "gpt-3.5-turbo" | "gpt-4" | "gpt-4-turbo"): string {
   switch (model) {
-    case "gpt-4": return "asst_1ioRLzs70ds5qn8YKSPewhBK";
-    case "gpt-4-turbo": return "asst_QGU7iUk1RsymZWcf5mr3wMlF";
-    default: return "asst_yhkYpdzgfFoYXTyGREgJd97u";
+    case "gpt-4": return process.env.REACT_APP_ASSISTANT_4 || "";
+    case "gpt-4-turbo": return process.env.REACT_APP_ASSISTANT_4_TURBO || "";
+    default: return process.env.REACT_APP_ASSISTANT_3_5_TURBO || "";
   }
 }
 export async function chatGPTRequest(prompt: string, instruction: string): Promise<string> {
