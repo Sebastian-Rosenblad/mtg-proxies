@@ -22,23 +22,20 @@ interface FieldM {
 
 export function EditP(props: EditPagePropsM): JSX.Element {
   const { sets, saveCard, stopEditing, deleteCard } = props;
-  const [editingCard, setEditingCard] = useState<CardM>(props.card);
+  const [card, setCard] = useState<CardM>(props.card);
   const [isChanged, setIsChanged] = useState<boolean>(false);
   const [illustration, setIllustration] = useState<number>(0);
   const [deleteConfirmation, setDeleteConfirmation] = useState<number>(0);
+  const [imgEl, setImgEl] = useState<HTMLImageElement | null>(null);
   const [settings, setSettings] = useState<SettingsM>(SaveManager.loadSettings());
 
   useEffect(() => {
     SaveManager.saveSettings(settings);
   }, [settings]);
 
-  function handleDeleteClick() {
-    if (!deleteConfirmation) setDeleteConfirmation(Date.now());
-    else if (Date.now() <= deleteConfirmation + 2000 && deleteCard) deleteCard(editingCard);
-  }
   function handleChange(key: keyof CardM, value: string | Array<string>) {
-    let card: CardM = { ...editingCard, [key]: value };
-    setEditingCard(removeUndefined({ ...card }));
+    let newCard: CardM = { ...card, [key]: value };
+    setCard(removeUndefined({ ...newCard }));
     setIsChanged(true);
   }
   function removeUndefined(card: CardM): CardM {
@@ -52,8 +49,23 @@ export function EditP(props: EditPagePropsM): JSX.Element {
     return card;
   }
   function handleSave() {
-    saveCard(editingCard);
+    saveCard(card);
     setIsChanged(false);
+  }
+  function handleDeleteClick() {
+    if (!deleteConfirmation) setDeleteConfirmation(Date.now());
+    else if (Date.now() <= deleteConfirmation + 2000 && deleteCard) deleteCard(card);
+  }
+  function handleToggleClick() {
+    setSettings({ ...settings, editSize: settings.editSize === "small" ? "large" : "small" });
+  }
+  function handleCopyClick() {
+    const clip: string = ", magic the gathering art --ar " + getDimensions();
+    navigator.clipboard.writeText(clip);
+  }
+  function getDimensions(): string {
+    if (imgEl !== null) return imgEl.offsetWidth + ":" + imgEl.offsetHeight;
+    return "1:1";
   }
 
   const fields: Array<FieldM> = [
@@ -79,21 +91,21 @@ export function EditP(props: EditPagePropsM): JSX.Element {
           key={field.key + "-" + index}
           label={field.label}
           name={field.key}
-          value={editingCard[field.key] as string || ""}
+          value={card[field.key] as string || ""}
           updateValue={(value: string) => handleChange(field.key, value)}
         /> :
         field.type === "textarea" ? <InputTextareaC
           key={field.key + "-" + index}
           label={field.label}
           name={field.key}
-          value={editingCard[field.key] as string || ""}
+          value={card[field.key] as string || ""}
           updateValue={(value: string) => handleChange(field.key, value)}
         /> :
         field.type === "text-array" ? <InputTextArrayC
           key={field.key + "-" + index}
           label={field.label}
           name={field.key}
-          value={editingCard[field.key] as Array<string> || []}
+          value={card[field.key] as Array<string> || []}
           updateValue={(value: Array<string>) => handleChange(field.key, value)}
           singular={field.singular || ""}
         /> :
@@ -101,7 +113,7 @@ export function EditP(props: EditPagePropsM): JSX.Element {
           key={field.key + "-" + index}
           label={field.label}
           name={field.key}
-          value={editingCard[field.key] as Array<string> || []}
+          value={card[field.key] as Array<string> || []}
           updateValue={(value: Array<string>) => handleChange(field.key, value)}
           singular={field.singular || ""}
         /> :
@@ -110,7 +122,7 @@ export function EditP(props: EditPagePropsM): JSX.Element {
           id={field.key + "-" + index}
           label={field.label}
           options={field.options || []}
-          value={editingCard[field.key] as string}
+          value={card[field.key] as string}
           updateValue={(value: string) => handleChange(field.key, value)}
         />
       )}
@@ -119,7 +131,7 @@ export function EditP(props: EditPagePropsM): JSX.Element {
         label="Border"
         undefinable={false}
         options={[{ value: "black", name: "Black" }, { value: "white", name: "White" }, { value: "borderless", name: "Borderless" }]}
-        value={editingCard.border || "black"}
+        value={card.border || "black"}
         updateValue={(value: string) => handleChange("border", value)}
       />
       <div className="edit--content--buttons">
@@ -131,10 +143,19 @@ export function EditP(props: EditPagePropsM): JSX.Element {
     <div className="edit--right">
       <div className={["edit--right--card", settings.editSize].join(" ")}>
         <div className={["edit--right--card--shrink", settings.editSize].join(" ")}>
-          <CardC card={editingCard} set={getCardsSet(editingCard, sets)} illustration={illustration} updateIllustration={setIllustration} />
+          <CardC
+            card={card}
+            set={getCardsSet(card, sets)}
+            illustration={illustration}
+            updateIllustration={setIllustration}
+            usingRef={setImgEl}
+          />
         </div>
       </div>
-      <button onClick={() => setSettings({ ...settings, editSize: settings.editSize === "small" ? "large" : "small" })}>{settings.editSize === "small" ? "Large card" : "Small card"}</button>
+      <div className="edit--right--buttons">
+        <button onClick={handleToggleClick}>{settings.editSize === "small" ? "Large card" : "Small card"}</button>
+        <button onClick={handleCopyClick}>Copy prompt</button>
+      </div>
     </div>
   </div>;
 }
