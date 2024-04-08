@@ -38,6 +38,12 @@ interface InspirationM {
   desc: string;
   comment: string;
 }
+interface CommentResponseM {
+  prevName: string;
+  newName: string;
+  type: string;
+  desc: string;
+}
 export interface AiCardM {
   name: string;
   manaValue: string;
@@ -74,11 +80,11 @@ const stepTexts = {
   },
   two: {
     prompt: `I have some comments on a few cards:\n\n[COMMENTS]\n\nIf you change the card type from a comment, please update the name of the card so that it better fit the new type.`,
-    instruction: `Please provide the inspiration in an array of objects following this JSON format:\n\n[{\n  name: string;\n  type: string;\n  desc: string;\n}]`
+    instruction: `Please provide the inspiration in an array of objects following this JSON format:\n\n[{\n  prevName: string;\n  newName: string;\n  type: string;\n  desc: string;\n}]`
   },
   three: {
     prompt: `As for the final part of creating the structure, could you rank these cards from: should be most powerful/most interesting (first position) to: should be least powerful/least interesting (final position)? Which card really encapsulates this pack and should therefore be the signature card? That card should take the number one spot. The land should end up in place: [LAND].`,
-    instruction: `Please provide the rankings in an array of strings like this:\n\n["card name", "card name", ...]`
+    instruction: `Please provide the rankings in a code block with an array of strings like this:\n\n["card name", "card name", ...]`
   },
   four: {
     prompt: `Now let's take this inspiration and turn it into fully working cards! Let's begin with these:\n\n[CARD_0]: This is the signature card and should be a very powerful Mythic card.\n[CARD_1]: This is the second most interesting card and should be a powerful Rare card.${new Array(4).fill(-1).map((_, i) => `\n[CARD_${i + 2}]: This is an Uncommon card, not boring, but not to powerful.`)}`,
@@ -155,20 +161,34 @@ export function ChatGptP(props: ChatGptPropsM): JSX.Element {
       const value: Array<InspirationResponseM> = JSON.parse(response);
       setInspiration(value.map(item => ({ ...item, comment: "" })));
       setResponse("");
-      if (step < 10) setStep(10);
-      else if (step < 20) setStep(20);
-      else setStep(30);
+      setStep(10);
     } catch {
       console.error("Error parsing response");
     }
   }
   // COPY STEP 2
   function copyStepTwo() {
-    const prompt: string = stepTexts.two.prompt.replace("[COMMENTS]", inspiration.map(item =>
-      item.name + ": " + (item.comment.length > 0 ? item.comment : "Unchanged")
-    ).join(`\n`));
+    const prompt: string = stepTexts.two.prompt.replace("[COMMENTS]", inspiration
+      .filter(item => item.comment.length > 0)
+      .map(item => item.name + ": " + item.comment)
+      .join(`\n`));
     const instruction: string = stepTexts.two.instruction;
     navigator.clipboard.writeText(prompt + `\n\n` + instruction).then(() => setStep(11));
+  }
+  // PARSE STEP 2
+  function parseStepTwo() {
+    try {
+      const values: Array<CommentResponseM> = JSON.parse(response);
+      setInspiration(inspiration.map(item => {
+        const newValue: CommentResponseM | undefined = values.find(value => value.prevName === item.name);
+        if (newValue !== undefined) return { name: newValue.newName, type: newValue.type, desc: newValue.desc, comment: "" };
+        return item;
+      }));
+      setResponse("");
+      setStep(20);
+    } catch {
+      console.error("Error parsing response");
+    }
   }
   // COPY STEP 3
   async function copyStepThree() {
@@ -190,9 +210,7 @@ export function ChatGptP(props: ChatGptPropsM): JSX.Element {
       const values: Array<string> = JSON.parse(response);
       setInspiration(parsingThree(values));
       setResponse("");
-      if (step < 10) setStep(10);
-      else if (step < 20) setStep(20);
-      else setStep(30);
+      setStep(30);
     } catch {
       console.error("Error parsing response");
     }
@@ -489,7 +507,7 @@ export function ChatGptP(props: ChatGptPropsM): JSX.Element {
       {step > 10 && <div className="chat-gpt--step--response">
         <p>The comments have been copied to your clipboard. Paste them into the existing ChatGPT chat and then paste the contents of the generated code block below:</p>
         <textarea value={response} onChange={(evt) => setResponse(evt.target.value)}></textarea>
-        {response.length > 0 && <button onClick={parseStepOne}>Next step</button>}
+        {response.length > 0 && <button onClick={parseStepTwo}>Next step</button>}
       </div>}
     </div>}
     {step === 25 && <div className="chat-gpt--step">
